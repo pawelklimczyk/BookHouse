@@ -1,0 +1,7 @@
+
+/.svn
+/src/_ReSharper.BookHouse
+*.user
+*.suo
+bin
+obj

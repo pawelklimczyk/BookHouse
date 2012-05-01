@@ -1,0 +1,205 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{A50F83FA-4F1E-4A2F-89AE-BC0164F248DA}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>BooksHouse</RootNamespace>
+    <AssemblyName>BooksHouse</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.SQLite">
+      <HintPath>..\..\libs\SQLite-1.0.66.0\bin\System.Data.SQLite.DLL</HintPath>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Page Include="Gui\Dialog\BookDetails.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Gui\Dialog\CategoryDetails.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="MainWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="BooksManager\BooksManager.cs" />
+    <Compile Include="Domain\Book.cs" />
+    <Compile Include="Domain\BookFilter.cs" />
+    <Compile Include="Domain\Category.cs" />
+    <Compile Include="Domain\Config.cs" />
+    <Compile Include="Domain\Logger.cs" />
+    <Compile Include="Domain\OperationStatus.cs" />
+    <Compile Include="Gui\Conventers.cs" />
+    <Compile Include="Gui\Converters\ImageConverter.cs" />
+    <Compile Include="Gui\Converters\RowNumberConverter.cs" />
+    <Compile Include="Gui\Dialog\BookDetails.xaml.cs">
+      <DependentUpon>BookDetails.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Gui\Dialog\CategoryDetails.xaml.cs">
+      <DependentUpon>CategoryDetails.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Helpers.cs" />
+    <Compile Include="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Page Include="Themes\Calm-theme\Calm-theme.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\Night-flowers-theme\Night-flowers-theme.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Themes\Violet-relax-theme\Violet-relax-theme.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="App.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <AppDesigner Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Themes\Calm-theme\sortbyautor-highligh.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Themes\Calm-theme\addposition-highligh.png" />
+    <Resource Include="Themes\Calm-theme\addposition-normal.png" />
+    <Resource Include="Themes\Calm-theme\sortbyautor-normal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Themes\Calm-theme\boczne-1.png" />
+    <Resource Include="Themes\Calm-theme\boczne-2.png" />
+    <Resource Include="Themes\Calm-theme\boczne-3.png" />
+    <Resource Include="Themes\Calm-theme\naglowek.png" />
+    <Resource Include="Themes\Calm-theme\sortbytitle-highligh.png" />
+    <Resource Include="Themes\Calm-theme\sortbytitle-normal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Themes\Calm-theme\search-highligh.png" />
+    <Resource Include="Themes\Calm-theme\search-normal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Themes\Calm-theme\changeskin-highligh.png" />
+    <Resource Include="Themes\Calm-theme\changeskin-normal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Themes\Night-flowers-theme\addposition-highligh.png" />
+    <Resource Include="Themes\Night-flowers-theme\addposition-normal.png" />
+    <Resource Include="Themes\Night-flowers-theme\boczne-1.png" />
+    <Resource Include="Themes\Night-flowers-theme\boczne-2.png" />
+    <Resource Include="Themes\Night-flowers-theme\boczne-3.png" />
+    <Resource Include="Themes\Night-flowers-theme\changeskin-highligh.png" />
+    <Resource Include="Themes\Night-flowers-theme\changeskin-normal.png" />
+    <Resource Include="Themes\Night-flowers-theme\naglowek.png" />
+    <Resource Include="Themes\Night-flowers-theme\search-highligh.png" />
+    <Resource Include="Themes\Night-flowers-theme\search-normal.png" />
+    <Resource Include="Themes\Night-flowers-theme\sortbyautor-highligh.png" />
+    <Resource Include="Themes\Night-flowers-theme\sortbyautor-normal.png" />
+    <Resource Include="Themes\Night-flowers-theme\sortbytitle-highligh.png" />
+    <Resource Include="Themes\Night-flowers-theme\sortbytitle-normal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Themes\Violet-relax-theme\addposition-highligh.jpg" />
+    <Resource Include="Themes\Violet-relax-theme\addposition-highligh.png" />
+    <Resource Include="Themes\Violet-relax-theme\addposition-normal.jpg" />
+    <Resource Include="Themes\Violet-relax-theme\addposition-normal.png" />
+    <Resource Include="Themes\Violet-relax-theme\boczne-1.jpg" />
+    <Resource Include="Themes\Violet-relax-theme\boczne-1.png" />
+    <Resource Include="Themes\Violet-relax-theme\boczne-2.jpg" />
+    <Resource Include="Themes\Violet-relax-theme\boczne-2.png" />
+    <Resource Include="Themes\Violet-relax-theme\boczne-3.png" />
+    <Resource Include="Themes\Violet-relax-theme\changeskin-highligh.png" />
+    <Resource Include="Themes\Violet-relax-theme\changeskin-normal.png" />
+    <Resource Include="Themes\Violet-relax-theme\naglowek.png" />
+    <Resource Include="Themes\Violet-relax-theme\search-highligh.png" />
+    <Resource Include="Themes\Violet-relax-theme\search-normal.png" />
+    <Resource Include="Themes\Violet-relax-theme\sortbyautor-highligh.png" />
+    <Resource Include="Themes\Violet-relax-theme\sortbyautor-normal.png" />
+    <Resource Include="Themes\Violet-relax-theme\sortbytitle-highligh.png" />
+    <Resource Include="Themes\Violet-relax-theme\sortbytitle-normal.png" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

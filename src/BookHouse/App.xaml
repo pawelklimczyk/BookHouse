@@ -1,0 +1,9 @@
+﻿<Application x:Class="BooksHouse.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <ResourceDictionary Source="Themes/Calm-theme/Calm-theme.xaml"/>
+        <!-- <ResourceDictionary Source="Themes/Night-flowers-theme/Night-flowers-theme.xaml"/>   -->
+    </Application.Resources>
+</Application>

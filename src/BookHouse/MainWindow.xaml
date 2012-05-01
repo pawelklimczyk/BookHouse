@@ -1,0 +1,158 @@
+﻿<Window x:Class="BooksHouse.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+        xmlns:src="clr-namespace:BooksHouse.Gui" xmlns:local="clr-namespace:BooksHouse" 
+        xmlns:Domain="clr-namespace:BooksHouse.Domain" 
+        xmlns:Converters="clr-namespace:BooksHouse.Gui.Converters" 
+        Title="BookHouse" Padding="0" Margin="0" Height="746" Width="1190" Name="uxMainWondow" 
+        Background="#98cafa" WindowStyle="ThreeDBorderWindow" ResizeMode="CanResize" WindowStartupLocation="CenterScreen" MinHeight="720" MinWidth="1186">
+    <Window.Resources>
+        <src:ObjectIsNullToBoolConverter x:Key="objectIsNullToBoolConverter"/>
+        <Style TargetType="StackPanel">
+            <Setter Property="Margin" Value="0"/>
+            <Setter Property="Background" Value="{x:Null}"/>
+        </Style>
+        <Style x:Key="add-book-label" TargetType="{x:Type Label}">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="VerticalAlignment"  Value="Center"/>
+            <Setter Property="HorizontalAlignment"  Value="Right"/>
+        </Style>
+        <Style x:Key="add-book-text" TargetType="{x:Type TextBox}">
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="VerticalAlignment"  Value="Center"/>
+            <Setter Property="HorizontalAlignment"  Value="Stretch"/>
+        </Style>
+        <Converters:RowNumberConverter x:Key="rowNumberConverter" />
+        <Converters:ImageConverter x:Key="imageConverter" />
+    </Window.Resources>
+    <Window.CommandBindings>
+        <CommandBinding Command="local:CommandLibrary.AddCategoryItem" CanExecute="CanAddCategoryItemExecute" Executed="OnAddCategoryItemExecute" />
+        <CommandBinding Command="local:CommandLibrary.RemoveCategoryItem" CanExecute="CanRemoveCategoryItemExecute" Executed="OnRemoveListItemExecute" />
+        <CommandBinding Command="local:CommandLibrary.RefreshCategoryList" CanExecute="CanRefreshCategoryListExecute" Executed="OnRefreshCategoryListExecute" />
+        <CommandBinding Command="local:CommandLibrary.EditCategoryItem" CanExecute="CanEditCategoryItemExecute" Executed="OnEditCategoryItemExecute" />
+        <CommandBinding Command="local:CommandLibrary.AddBookToCategoryItem" CanExecute="CanAddBookToCategoryItemExecute" Executed="OnAddBookToCategoryItemExecute" />
+        <CommandBinding Command="local:CommandLibrary.AddBookItem" CanExecute="CanAddBookItemExecute" Executed="OnAddBookItemExecute" />
+        <CommandBinding Command="local:CommandLibrary.SearchBookItem" CanExecute="CanSearchBookItemExecute" Executed="OnSearchBookItemExecute" />
+        <CommandBinding Command="local:CommandLibrary.ChangeSkinItem" CanExecute="CanChangeSkinItemExecute" Executed="OnChangeSkinItemExecute" />
+    </Window.CommandBindings>
+    <DockPanel HorizontalAlignment="Center" VerticalAlignment="Top" LastChildFill="True" MinWidth="1186" MaxWidth="1186" MaxHeight="720" MinHeight="720">
+        <StackPanel DockPanel.Dock="Left" Width="236">
+            <StackPanel Height="236" Style="{DynamicResource right-top-stack-panel}">
+                <Grid Margin="18 60 23 3">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="30"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="50"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Style="{DynamicResource add-book-label}"  Grid.Row="0" Grid.Column="0" >Tytuł</Label>
+                    <TextBox Style="{DynamicResource add-book-text}" Grid.Row="0" Grid.Column="1" Name="uxAddBookTitle"></TextBox>
+                    <Label Style="{DynamicResource add-book-label}"  Grid.Row="1" Grid.Column="0" >Autor</Label>
+                    <TextBox Style="{DynamicResource add-book-text}" Grid.Row="1" Grid.Column="1" Name="uxAddBookAuthor"></TextBox>
+                    <Label Style="{DynamicResource add-book-label}"  Grid.Row="2" Grid.Column="0" >ISBN</Label>
+                    <TextBox Style="{DynamicResource add-book-text}" Grid.Row="2" Grid.Column="1" Name="uxAddBookISBN"></TextBox>
+                </Grid>
+                <Button Command="local:CommandLibrary.AddBookItem" Margin="0 16" Style="{DynamicResource add-book-button}">
+
+                </Button>
+            </StackPanel>
+            <StackPanel Height="484" Style="{DynamicResource right-bottom-stack-panel}">
+                <StackPanel Orientation="Horizontal" Margin="60 9 0 0">
+                    <Button Style="{DynamicResource sort-by-title-button}"  Click="SortByTitle_Click"/>
+                    <Button Style="{DynamicResource sort-by-author-button}"  Click="SortByAuthor_Click" Margin="4 0 0 0 " />
+                </StackPanel>
+                <TreeView Margin="0 45 0 0" Name="uxCategoryList"  SelectedItemChanged="uxCategoryList_SelectedItemChanged" Background="{x:Null}" BorderThickness="0">
+                    <TreeView.ContextMenu>
+                        <ContextMenu >
+                            <ContextMenu.Items>
+                                <MenuItem Header="Dodaj książkę" Command="local:CommandLibrary.AddBookToCategoryItem" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.SelectedItem}"/>
+                                <MenuItem Header="Dodaj kategorie" Command="local:CommandLibrary.AddCategoryItem" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.SelectedItem}"/>
+                                <MenuItem Header="Usun kategorie" Command="local:CommandLibrary.RemoveCategoryItem" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.SelectedItem}"/>
+                                <MenuItem Header="Edytuj" Command="local:CommandLibrary.EditCategoryItem" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.SelectedItem}"/>
+                                <MenuItem Header="Odswiez" Command="local:CommandLibrary.RefreshCategoryList" />
+                            </ContextMenu.Items>
+                        </ContextMenu>
+                    </TreeView.ContextMenu>
+                    <TreeView.ItemTemplate>
+                        <HierarchicalDataTemplate ItemsSource="{Binding SubCategories}" DataType="{x:Type Domain:Category}">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding Name}" >                              
+                                    <TextBlock.Style>
+                                         <Style TargetType="{x:Type TextBlock}">
+                                             <Setter Property="FontSize" Value="16"/>
+                                             <Setter Property="Foreground" Value="White"/>
+                                         </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </StackPanel>
+                        </HierarchicalDataTemplate>
+                    </TreeView.ItemTemplate>
+                </TreeView>
+            </StackPanel>
+        </StackPanel>
+        <StackPanel DockPanel.Dock="Right" Width="160" Height="720" Style="{DynamicResource right-pane-stack-panel}">
+            <TextBox Name="uxSearchBox" Margin="5 145 10 0"  Style="{DynamicResource add-book-text}" KeyDown="uxSearchBox_KeyDown"></TextBox>
+            <Button Command="local:CommandLibrary.SearchBookItem" Margin="0 5 0 0" Style="{DynamicResource search-book-button}" BorderBrush="{x:Null}" />
+            <ComboBox Width="150" Margin="0 75 0 0" Name="CurrentSkinComboBox">
+                <ComboBoxItem Tag="Themes/Calm-theme/Calm-theme.xaml">Calm</ComboBoxItem>
+                <ComboBoxItem IsSelected="True" Tag="Themes/Night-flowers-theme/Night-flowers-theme.xaml">Night flowers</ComboBoxItem>
+            </ComboBox>
+            <Button Command="local:CommandLibrary.ChangeSkinItem" Margin="0 5 0 0" Style="{DynamicResource change-skil-button}" BorderBrush="{x:Null}" />
+
+
+        </StackPanel>
+        <StackPanel DockPanel.Dock="Top" Height="107" Style="{DynamicResource header-stack-panel}">
+
+        </StackPanel>
+
+        <DataGrid HeadersVisibility="None" Name="uxBooksList" AutoGenerateColumns="False" RowHeaderWidth="0" CanUserAddRows="false" Background="{x:Null}"  Margin="0" Padding="0">
+            <DataGrid.Columns>
+                <DataGridTemplateColumn IsReadOnly="True" Width="*" >
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <DockPanel Height="130" LastChildFill="True" Background="#98cafa">
+                                <StackPanel DockPanel.Dock="Bottom" Height="24" Orientation="Horizontal" Background="#3d5a8a">
+                                    <Label Background="#98cafa" Width="80" Height="24" FontFamily="Tahoma" FontSize="12" VerticalContentAlignment="Center" HorizontalContentAlignment="Center">
+                                        <MultiBinding Converter="{StaticResource rowNumberConverter}">
+                                            <Binding />
+                                            <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}" />
+                                        </MultiBinding>
+                                    </Label>
+                                    <StackPanel  Orientation="Horizontal"  >
+                                        <Label Foreground="#769dde" FontFamily="Tahoma" FontSize="12" Content="Category" />
+                                        <Label Foreground="#98cafa" FontFamily="Tahoma" FontSize="12" Content="{Binding CategoryName}" />
+                                    </StackPanel>
+                                </StackPanel>
+
+                                <Image DockPanel.Dock="Left" Width="80" Height="50" Source="{Binding Path=Cover, Converter={StaticResource imageConverter} }"/>
+                                
+
+                                <StackPanel DockPanel.Dock="Right" Width="80" Height="130" Margin="5">
+                                    <Button Click="Button_Click">
+                                        <Button.Style>
+                                            <Style TargetType="{x:Type Button}">
+                                                <Setter Property="Background" Value="White"/>
+                                            </Style>
+                                        </Button.Style>
+                                        Edit</Button>
+                                    <Label Padding="0" Margin="1 20 0 1">Date:</Label>
+                                    <Label Padding="0" Margin="1 0" ContentStringFormat="dd/MM/yyyy" Content="{Binding Path=EntryDate}" />
+                                </StackPanel>
+                                <StackPanel HorizontalAlignment="Stretch">
+                                    <Label Background="#3d5a8a" Foreground="#98cafa" FontFamily="Arial" FontSize="14" FontWeight="Bold" FontStyle="Italic" Content="{Binding Title}" Margin="3 6 1 0" Padding="3 1"/>
+                                    <Label Background="#3d5a8a" Foreground="#98cafa" FontFamily="Tahoma" FontSize="14" FontWeight="Bold" Content="{Binding Author}" Margin="3 0 1 15" Padding="3 1" />
+                                    <Label Foreground="#23385a" FontFamily="Tahoma" FontSize="12" Content="{Binding AdditionalInfo}" Padding="1" Margin="1" />
+                                    <Label Foreground="#23385a" FontFamily="Tahoma" FontSize="12" Margin="1" Padding="1" Content="{Binding ISBN}" />
+                                </StackPanel>
+                            </DockPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </DockPanel>
+</Window>
