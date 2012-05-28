@@ -10,7 +10,7 @@ namespace BooksHouse.Gui.Dialog
         private CategoryDetails()
         {
             InitializeComponent();
-            KeyDown += new KeyEventHandler(HandleKeys);
+            KeyDown += HandleKeys;
         }
 
         private void HandleKeys(object sender, KeyEventArgs e)
@@ -20,7 +20,7 @@ namespace BooksHouse.Gui.Dialog
                 DialogResult = false;
                 Close();
             }
-            if (e.Key == Key.Enter)
+            else if (e.Key == Key.Enter)
             {
                 DialogResult = true;
                 Close();
@@ -33,7 +33,8 @@ namespace BooksHouse.Gui.Dialog
             status.Data = obj;
             CategoryDetails window = new CategoryDetails();
             window.DataContext = obj;
-            window.uxCategoryComboBox.ItemsSource = BooksManager.BooksManager.GetCategoryList(0).Where(c => c.Id != obj.Id);
+            window.uxCategoryComboBox.ItemsSource = BooksManager.BooksManager.GetCategoryList(Constants.ROOT_CATEGORY).Where(c => c.Id != obj.Id);
+
             var retStatus = window.ShowDialog();
 
             if (retStatus.HasValue && retStatus.Value)

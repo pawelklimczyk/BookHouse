@@ -47,14 +47,30 @@
             <Label VerticalAlignment="Center" HorizontalAlignment="Left" Grid.Row="4" Grid.Column="0">Additional inform.</Label>
             <TextBox VerticalAlignment="Center" HorizontalAlignment="Stretch" Grid.Row="4" Grid.Column="1" Text="{Binding AdditionalInfo}"></TextBox>
             <Image VerticalAlignment="Center" HorizontalAlignment="Stretch" Grid.Row="5" Grid.Column="0" Source="{Binding Cover,Converter={StaticResource imageConverter}}"/>
+            <StackPanel Grid.Row="5" Grid.Column="1" VerticalAlignment="Center">
+                <Button Name="btn_selectCover" Click="btn_selectCover_Click" Width="80" Height="25" >
+                    <Button.Style>
+                        <Style TargetType="{x:Type Button}">
+                            <Setter Property="Background" Value="White"/>
+                        </Style>
+                    </Button.Style> Select cover
+                </Button>
+                <Button Name="btn_deleteCover" Click="btn_deleteCover_Click" Width="80" Height="25" >
+                    <Button.Style>
+                        <Style TargetType="{x:Type Button}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding Cover}" Value="{x:Null}">
+                                    <DataTrigger.Setters>
+                                        <Setter Property="Visibility"  Value="Collapsed" />
+                                    </DataTrigger.Setters>
+                                </DataTrigger>
+                            </Style.Triggers>
+                            <Setter Property="Background" Value="White"/>
 
-            <Button Name="btn_selectCover" Click="btn_selectCover_Click" Width="80" Height="25" Grid.Row="5" Grid.Column="1">
-                <Button.Style>
-                    <Style TargetType="{x:Type Button}">
-                        <Setter Property="Background" Value="White"/>
-                    </Style>
-                </Button.Style> Select cover
-            </Button>
+                        </Style>
+                    </Button.Style> Delete cover
+                </Button>
+            </StackPanel>
         </Grid>
     </DockPanel>
 </Window>

@@ -8,8 +8,8 @@
     <ProjectGuid>{A50F83FA-4F1E-4A2F-89AE-BC0164F248DA}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>BooksHouse</RootNamespace>
-    <AssemblyName>BooksHouse</AssemblyName>
+    <RootNamespace>BookHouse</RootNamespace>
+    <AssemblyName>BookHouse</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>Client</TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
@@ -34,6 +34,9 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>book ic.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -76,13 +79,14 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="BooksManager\BooksManager.cs" />
+    <Compile Include="CommandLibrary.xaml.cs" />
     <Compile Include="Domain\Book.cs" />
     <Compile Include="Domain\BookFilter.cs" />
     <Compile Include="Domain\Category.cs" />
     <Compile Include="Domain\Config.cs" />
+    <Compile Include="Domain\Constants.cs" />
     <Compile Include="Domain\Logger.cs" />
     <Compile Include="Domain\OperationStatus.cs" />
-    <Compile Include="Gui\Conventers.cs" />
     <Compile Include="Gui\Converters\ImageConverter.cs" />
     <Compile Include="Gui\Converters\RowNumberConverter.cs" />
     <Compile Include="Gui\Dialog\BookDetails.xaml.cs">
@@ -99,6 +103,10 @@
     <Page Include="Themes\Calm-theme\Calm-theme.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\Natural-elegance-theme\Natural-elegance-theme.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Themes\Night-flowers-theme\Night-flowers-theme.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -135,30 +143,6 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Themes\Calm-theme\sortbyautor-highligh.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Themes\Calm-theme\addposition-highligh.png" />
-    <Resource Include="Themes\Calm-theme\addposition-normal.png" />
-    <Resource Include="Themes\Calm-theme\sortbyautor-normal.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Themes\Calm-theme\boczne-1.png" />
-    <Resource Include="Themes\Calm-theme\boczne-2.png" />
-    <Resource Include="Themes\Calm-theme\boczne-3.png" />
-    <Resource Include="Themes\Calm-theme\naglowek.png" />
-    <Resource Include="Themes\Calm-theme\sortbytitle-highligh.png" />
-    <Resource Include="Themes\Calm-theme\sortbytitle-normal.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Themes\Calm-theme\search-highligh.png" />
-    <Resource Include="Themes\Calm-theme\search-normal.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Themes\Calm-theme\changeskin-highligh.png" />
-    <Resource Include="Themes\Calm-theme\changeskin-normal.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Themes\Night-flowers-theme\addposition-highligh.png" />
     <Resource Include="Themes\Night-flowers-theme\addposition-normal.png" />
     <Resource Include="Themes\Night-flowers-theme\boczne-1.png" />
@@ -175,13 +159,9 @@
     <Resource Include="Themes\Night-flowers-theme\sortbytitle-normal.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Themes\Violet-relax-theme\addposition-highligh.jpg" />
     <Resource Include="Themes\Violet-relax-theme\addposition-highligh.png" />
-    <Resource Include="Themes\Violet-relax-theme\addposition-normal.jpg" />
     <Resource Include="Themes\Violet-relax-theme\addposition-normal.png" />
-    <Resource Include="Themes\Violet-relax-theme\boczne-1.jpg" />
     <Resource Include="Themes\Violet-relax-theme\boczne-1.png" />
-    <Resource Include="Themes\Violet-relax-theme\boczne-2.jpg" />
     <Resource Include="Themes\Violet-relax-theme\boczne-2.png" />
     <Resource Include="Themes\Violet-relax-theme\boczne-3.png" />
     <Resource Include="Themes\Violet-relax-theme\changeskin-highligh.png" />
@@ -193,6 +173,44 @@
     <Resource Include="Themes\Violet-relax-theme\sortbyautor-normal.png" />
     <Resource Include="Themes\Violet-relax-theme\sortbytitle-highligh.png" />
     <Resource Include="Themes\Violet-relax-theme\sortbytitle-normal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Themes\Calm-theme\addposition-highligh.png" />
+    <Resource Include="Themes\Calm-theme\addposition-normal.png" />
+    <Resource Include="Themes\Calm-theme\boczne-1.png" />
+    <Resource Include="Themes\Calm-theme\boczne-2.png" />
+    <Resource Include="Themes\Calm-theme\boczne-3.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Themes\Calm-theme\changeskin-highligh.png" />
+    <Resource Include="Themes\Calm-theme\changeskin-normal.png" />
+    <Resource Include="Themes\Calm-theme\naglowek.png" />
+    <Resource Include="Themes\Calm-theme\search-highligh.png" />
+    <Resource Include="Themes\Calm-theme\search-normal.png" />
+    <Resource Include="Themes\Calm-theme\sortbyautor-highligh.png" />
+    <Resource Include="Themes\Calm-theme\sortbyautor-normal.png" />
+    <Resource Include="Themes\Calm-theme\sortbytitle-highligh.png" />
+    <Resource Include="Themes\Calm-theme\sortbytitle-normal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Themes\Natural-elegance-theme\addposition-highligh.png" />
+    <Resource Include="Themes\Natural-elegance-theme\addposition-normal.png" />
+    <Resource Include="Themes\Natural-elegance-theme\boczne-1.png" />
+    <Resource Include="Themes\Natural-elegance-theme\boczne-2.png" />
+    <Resource Include="Themes\Natural-elegance-theme\boczne-3.png" />
+    <Resource Include="Themes\Natural-elegance-theme\changeskin-highligh.png" />
+    <Resource Include="Themes\Natural-elegance-theme\changeskin-normal.png" />
+    <Resource Include="Themes\Natural-elegance-theme\lyout %28natural elegance%29.jpg" />
+    <Resource Include="Themes\Natural-elegance-theme\naglowek.png" />
+    <Resource Include="Themes\Natural-elegance-theme\search-highligh.png" />
+    <Resource Include="Themes\Natural-elegance-theme\search-normal.png" />
+    <Resource Include="Themes\Natural-elegance-theme\sortbyautor-highligh.png" />
+    <Resource Include="Themes\Natural-elegance-theme\sortbyautor-normal.png" />
+    <Resource Include="Themes\Natural-elegance-theme\sortbytitle-highligh.png" />
+    <Resource Include="Themes\Natural-elegance-theme\sortbytitle-normal.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="book ic.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

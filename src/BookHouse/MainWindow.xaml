@@ -1,13 +1,14 @@
 ﻿<Window x:Class="BooksHouse.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
-        xmlns:src="clr-namespace:BooksHouse.Gui" xmlns:local="clr-namespace:BooksHouse" 
+        xmlns:local="clr-namespace:BooksHouse" 
         xmlns:Domain="clr-namespace:BooksHouse.Domain" 
         xmlns:Converters="clr-namespace:BooksHouse.Gui.Converters" 
         Title="BookHouse" Padding="0" Margin="0" Height="746" Width="1190" Name="uxMainWondow" 
-        Background="#98cafa" WindowStyle="ThreeDBorderWindow" ResizeMode="CanResize" WindowStartupLocation="CenterScreen" MinHeight="720" MinWidth="1186">
+        WindowStyle="ThreeDBorderWindow" ResizeMode="CanResize" WindowStartupLocation="CenterScreen" MinHeight="720" MinWidth="1186"
+        Style="{DynamicResource main-window-style}" OverridesDefaultStyle="False">
     <Window.Resources>
-        <src:ObjectIsNullToBoolConverter x:Key="objectIsNullToBoolConverter"/>
+
         <Style TargetType="StackPanel">
             <Setter Property="Margin" Value="0"/>
             <Setter Property="Background" Value="{x:Null}"/>
@@ -39,7 +40,7 @@
     <DockPanel HorizontalAlignment="Center" VerticalAlignment="Top" LastChildFill="True" MinWidth="1186" MaxWidth="1186" MaxHeight="720" MinHeight="720">
         <StackPanel DockPanel.Dock="Left" Width="236">
             <StackPanel Height="236" Style="{DynamicResource right-top-stack-panel}">
-                <Grid Margin="18 60 23 3">
+                <Grid Margin="17 61 23 3">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="30"/>
                         <RowDefinition Height="30"/>
@@ -56,14 +57,12 @@
                     <Label Style="{DynamicResource add-book-label}"  Grid.Row="2" Grid.Column="0" >ISBN</Label>
                     <TextBox Style="{DynamicResource add-book-text}" Grid.Row="2" Grid.Column="1" Name="uxAddBookISBN"></TextBox>
                 </Grid>
-                <Button Command="local:CommandLibrary.AddBookItem" Margin="0 16" Style="{DynamicResource add-book-button}">
-
-                </Button>
+                <Button Command="local:CommandLibrary.AddBookItem" Margin="0 15" Style="{DynamicResource add-book-button}" />
             </StackPanel>
             <StackPanel Height="484" Style="{DynamicResource right-bottom-stack-panel}">
                 <StackPanel Orientation="Horizontal" Margin="60 9 0 0">
-                    <Button Style="{DynamicResource sort-by-title-button}"  Click="SortByTitle_Click"/>
-                    <Button Style="{DynamicResource sort-by-author-button}"  Click="SortByAuthor_Click" Margin="4 0 0 0 " />
+                    <Button Style="{DynamicResource sort-by-title-button}" Click="OrderByTitle_Click"/>
+                    <Button Style="{DynamicResource sort-by-author-button}" Click="OrderByAuthor_Click" Margin="4 0 0 0 " />
                 </StackPanel>
                 <TreeView Margin="0 45 0 0" Name="uxCategoryList"  SelectedItemChanged="uxCategoryList_SelectedItemChanged" Background="{x:Null}" BorderThickness="0">
                     <TreeView.ContextMenu>
@@ -94,51 +93,50 @@
                 </TreeView>
             </StackPanel>
         </StackPanel>
-        <StackPanel DockPanel.Dock="Right" Width="160" Height="720" Style="{DynamicResource right-pane-stack-panel}">
+        <StackPanel DockPanel.Dock="Right" Width="160" Height="720"  Style="{DynamicResource right-pane-stack-panel}">
             <TextBox Name="uxSearchBox" Margin="5 145 10 0"  Style="{DynamicResource add-book-text}" KeyDown="uxSearchBox_KeyDown"></TextBox>
             <Button Command="local:CommandLibrary.SearchBookItem" Margin="0 5 0 0" Style="{DynamicResource search-book-button}" BorderBrush="{x:Null}" />
             <ComboBox Width="150" Margin="0 75 0 0" Name="CurrentSkinComboBox">
+                <ComboBoxItem IsSelected="True" Tag="Themes/Night-flowers-theme/Night-flowers-theme.xaml">Night Flowers</ComboBoxItem>
                 <ComboBoxItem Tag="Themes/Calm-theme/Calm-theme.xaml">Calm</ComboBoxItem>
-                <ComboBoxItem IsSelected="True" Tag="Themes/Night-flowers-theme/Night-flowers-theme.xaml">Night flowers</ComboBoxItem>
+                <ComboBoxItem Tag="Themes/Violet-relax-theme/Violet-relax-theme.xaml">Violet</ComboBoxItem>
+                <ComboBoxItem Tag="Themes/Natural-elegance-theme/Natural-elegance-theme.xaml">Natural Elegance</ComboBoxItem>
             </ComboBox>
             <Button Command="local:CommandLibrary.ChangeSkinItem" Margin="0 5 0 0" Style="{DynamicResource change-skil-button}" BorderBrush="{x:Null}" />
-
-
         </StackPanel>
-        <StackPanel DockPanel.Dock="Top" Height="107" Style="{DynamicResource header-stack-panel}">
-
-        </StackPanel>
-
-        <DataGrid HeadersVisibility="None" Name="uxBooksList" AutoGenerateColumns="False" RowHeaderWidth="0" CanUserAddRows="false" Background="{x:Null}"  Margin="0" Padding="0">
+        
+        <StackPanel DockPanel.Dock="Top" Height="107" Style="{DynamicResource header-stack-panel}" /> 
+        
+        <DataGrid HeadersVisibility="None" Name="uxBooksList" AutoGenerateColumns="False" RowHeaderWidth="0" CanUserAddRows="false" Background="{x:Null}"  Margin="0" Padding="0" BorderBrush="{x:Null}">
             <DataGrid.Columns>
                 <DataGridTemplateColumn IsReadOnly="True" Width="*" >
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <DockPanel Height="130" LastChildFill="True" Background="#98cafa">
+                            <DockPanel Height="130" LastChildFill="True" >
                                 <StackPanel DockPanel.Dock="Bottom" Height="24" Orientation="Horizontal" Background="#3d5a8a">
-                                    <Label Background="#98cafa" Width="80" Height="24" FontFamily="Tahoma" FontSize="12" VerticalContentAlignment="Center" HorizontalContentAlignment="Center">
+                                    <Label Width="80" Height="24" FontFamily="Tahoma" FontSize="12" VerticalContentAlignment="Center" HorizontalContentAlignment="Center">
                                         <MultiBinding Converter="{StaticResource rowNumberConverter}">
                                             <Binding />
                                             <Binding RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}" />
                                         </MultiBinding>
                                     </Label>
-                                    <StackPanel  Orientation="Horizontal"  >
+                                    <StackPanel Orientation="Horizontal" >
                                         <Label Foreground="#769dde" FontFamily="Tahoma" FontSize="12" Content="Category" />
                                         <Label Foreground="#98cafa" FontFamily="Tahoma" FontSize="12" Content="{Binding CategoryName}" />
                                     </StackPanel>
                                 </StackPanel>
 
-                                <Image DockPanel.Dock="Left" Width="80" Height="50" Source="{Binding Path=Cover, Converter={StaticResource imageConverter} }"/>
-                                
+                                <Image DockPanel.Dock="Left" Width="80" Height="50" Source="{Binding Path=Cover, Converter={StaticResource imageConverter} }"/>                                
 
                                 <StackPanel DockPanel.Dock="Right" Width="80" Height="130" Margin="5">
-                                    <Button Click="Button_Click">
+                                    <Button Click="EditBook_Click">
                                         <Button.Style>
                                             <Style TargetType="{x:Type Button}">
                                                 <Setter Property="Background" Value="White"/>
                                             </Style>
                                         </Button.Style>
-                                        Edit</Button>
+                                        Edit
+                                    </Button>
                                     <Label Padding="0" Margin="1 20 0 1">Date:</Label>
                                     <Label Padding="0" Margin="1 0" ContentStringFormat="dd/MM/yyyy" Content="{Binding Path=EntryDate}" />
                                 </StackPanel>

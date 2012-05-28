@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BooksHouse", "BookHouse\BookHouse.csproj", "{A50F83FA-4F1E-4A2F-89AE-BC0164F248DA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookHouse", "BookHouse\BookHouse.csproj", "{A50F83FA-4F1E-4A2F-89AE-BC0164F248DA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookHouseTests", "BookHouseTests\BookHouseTests.csproj", "{A65B1FA8-5269-481B-82A1-EFDF93DD8BAD}"
 EndProject
@@ -27,13 +27,12 @@ Global
 		{A50F83FA-4F1E-4A2F-89AE-BC0164F248DA}.Release|x86.Build.0 = Release|x86
 		{A65B1FA8-5269-481B-82A1-EFDF93DD8BAD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A65B1FA8-5269-481B-82A1-EFDF93DD8BAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A65B1FA8-5269-481B-82A1-EFDF93DD8BAD}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{A65B1FA8-5269-481B-82A1-EFDF93DD8BAD}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{A65B1FA8-5269-481B-82A1-EFDF93DD8BAD}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{A65B1FA8-5269-481B-82A1-EFDF93DD8BAD}.Debug|Mixed Platforms.Build.0 = Debug|x86
 		{A65B1FA8-5269-481B-82A1-EFDF93DD8BAD}.Debug|x86.ActiveCfg = Debug|Any CPU
 		{A65B1FA8-5269-481B-82A1-EFDF93DD8BAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A65B1FA8-5269-481B-82A1-EFDF93DD8BAD}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A65B1FA8-5269-481B-82A1-EFDF93DD8BAD}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{A65B1FA8-5269-481B-82A1-EFDF93DD8BAD}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{A65B1FA8-5269-481B-82A1-EFDF93DD8BAD}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution

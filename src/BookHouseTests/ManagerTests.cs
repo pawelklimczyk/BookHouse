@@ -1,4 +1,5 @@
-﻿using BooksHouse.Domain;
+﻿using System.Drawing;
+using BooksHouse.Domain;
 using MbUnit.Framework;
 using BooksHouse.BooksManager;
 using System.Linq;
@@ -31,12 +32,12 @@ namespace BooksHouseTests
             BooksManager.RunSQL("INSERT INTO CATEGORY VALUES (10,9,'category 2.1')");
 
             //books
-            BooksManager.RunSQL("INSERT INTO BOOK VALUES (1,NULL,'title 1','author 1','ISBN1','123',1)");
-            BooksManager.RunSQL("INSERT INTO BOOK VALUES (2,1,'title 2','author 2','234','234',1)");
-            BooksManager.RunSQL("INSERT INTO BOOK VALUES (3,3,'title 3','author 3','345','345',1)");
-            BooksManager.RunSQL("INSERT INTO BOOK VALUES (4,3,'title 4','author 4','456','456',1)");
-            BooksManager.RunSQL("INSERT INTO BOOK VALUES (5,5,'title 5 - to delete','author 5','567','567',1)");
-            BooksManager.RunSQL("INSERT INTO BOOK VALUES (6,5,'title 5 - category to delete','author 5','678','678',1)");
+            BooksManager.RunSQL("INSERT INTO BOOK VALUES (1,NULL,'title 1','author 1','ISBN1','123',1,NULL)");
+            BooksManager.RunSQL("INSERT INTO BOOK VALUES (2,1,'title 2','author 2','234','234',1,NULL)");
+            BooksManager.RunSQL("INSERT INTO BOOK VALUES (3,3,'title 3','author 3','345','345',1,NULL)");
+            BooksManager.RunSQL("INSERT INTO BOOK VALUES (4,3,'title 4','author 4','456','456',1,NULL)");
+            BooksManager.RunSQL("INSERT INTO BOOK VALUES (5,5,'title 5 - to delete','author 5','567','567',1,NULL)");
+            BooksManager.RunSQL("INSERT INTO BOOK VALUES (6,5,'title 5 - category to delete','author 5','678','678',1,NULL)");
 
             #endregion
         }
@@ -94,7 +95,7 @@ namespace BooksHouseTests
         [Test]
         public void ShouldReadAllCategoryList()
         {
-            var list = BooksManager.GetCategoryList(0);
+            var list = BooksManager.GetCategoryList(Constants.ROOT_CATEGORY);
 
             foreach (var category in list.Where(c => c.ParentId > 0))
                 Assert.IsTrue(category.ParentId == category.Parent.Id);
@@ -120,7 +121,7 @@ namespace BooksHouseTests
             Assert.AreEqual(1, list.Count);
 
             //should return 2 (2 subcategories of "category 2")
-            Assert.AreEqual(2,list.First(c=>c.Id==2).SubCategories.Count);
+            Assert.AreEqual(2, list.First(c => c.Id == 2).SubCategories.Count);
         }
 
         [Test]
@@ -152,6 +153,30 @@ namespace BooksHouseTests
             Book book = new Book { CategoryId = 1, Title = "Book title", Author = "pawel", AdditionalInfo = "Additional Info", ISBN = "222222" };
             BooksManager.InsertBook(book);
             Assert.GreaterThan(book.Id, 0);
+        }
+
+        [Test]
+        public void ShouldAddBookWithCover()
+        {
+            Book book = new Book { CategoryId = 1, Title = "Book title", Author = "pawel", AdditionalInfo = "Additional Info", ISBN = "222224", Cover = new Bitmap(4, 4) };
+            BooksManager.InsertBook(book);
+            Assert.GreaterThan(book.Id, 0);
+        }
+
+        [Test]
+        public void ShouldAddAndRemoveCoverFromBook()
+        {
+            Book book = new Book { CategoryId = 1, Title = "Book title", Author = "pawel", AdditionalInfo = "Additional Info", ISBN = "222226", Cover = new Bitmap(4, 4) };
+            var status = BooksManager.InsertBook(book);
+            Assert.GreaterThan(book.Id, 0);
+            Assert.IsNotNull(status.Data.Cover);
+
+            status.Data.Cover = null;
+            var status2 = BooksManager.UpdateBook(book);
+            Assert.AreEqual(status2.Result, OperationResult.Passed);
+
+            var book_with_no_cover = BooksManager.GetBook(book.Id);
+            Assert.IsNull(book_with_no_cover.Cover);
         }
 
         [Test]
@@ -205,8 +230,8 @@ namespace BooksHouseTests
         [Test]
         public void ShouldFindManyBookInSearch()
         {
-            var list = BooksManager.GetBooksList(new BookFilter() );
-            Assert.GreaterThan(list.Count,0);
+            var list = BooksManager.GetBooksList(new BookFilter());
+            Assert.GreaterThan(list.Count, 0);
         }
         [Test]
         public void ShouldFindOneBookInSearch()

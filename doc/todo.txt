@@ -1,0 +1,4 @@
+1. Cover scaling. Vertical adjust, horizontal cut/extend. 79x96
+2. ISBN - can be empty
+3. Remove cover option (in book edit window)
+4. Additional Info 2 field in book

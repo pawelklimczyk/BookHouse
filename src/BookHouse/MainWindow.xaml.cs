@@ -17,7 +17,6 @@ namespace BooksHouse
     public partial class MainWindow : Window
     {
         private long selectedCategoryId = 0;
-
         public MainWindow()
         {
             Config.DatabaseName = "baza.db3";
@@ -34,7 +33,7 @@ namespace BooksHouse
 
         private void RefreshCategoryList()
         {
-            uxCategoryList.ItemsSource = BooksManager.BooksManager.GetCategoryList(0);
+            uxCategoryList.ItemsSource = BooksManager.BooksManager.GetCategoryList(Constants.ROOT_CATEGORY);
         }
 
         private void CheckDatabaseFilePresence()
@@ -179,37 +178,23 @@ namespace BooksHouse
 
         private void OnChangeSkinItemExecute(object sender, ExecutedRoutedEventArgs e)
         {
-
-            var app = Application.Current;
-
             Application.Current.Resources.Clear();
-
+            Application.Current.Resources.MergedDictionaries.Clear();
             ComboBoxItem item = CurrentSkinComboBox.SelectedItem as ComboBoxItem;
-            
-            Uri rd1 = new Uri("/BooksHouse;component/"+item.Tag.ToString(), UriKind.RelativeOrAbsolute);
-            //Uri rd2 = new Uri("SecondDictionary.xaml", UriKind.Relative);
-            //app.Resources.MergedDictionaries.Add(Application.LoadComponent(rd1) as ResourceDictionary);
 
-            ResourceDictionary dictionary = Application.LoadComponent(rd1) as ResourceDictionary;
-
-            Application.Current.Resources.MergedDictionaries.Add(dictionary);
-
-
-            //             <ResourceDictionary Source="Themes/Calm-theme/Calm-theme.xaml"/>
-            //<ResourceDictionary Source="Themes/Night-flowers-theme/Night-flowers-theme.xaml"/>  
+            if (item != null)
+            {
+                Uri rd1 = new Uri("/BookHouse;component/"+item.Tag, UriKind.RelativeOrAbsolute);
+                ResourceDictionary dictionary = Application.LoadComponent(rd1) as ResourceDictionary;
+                Application.Current.Resources.MergedDictionaries.Add(dictionary);
+            }
         }
-
 
         private void RefreshBooksList(BookFilter filter)
         {
             uxBooksList.ItemsSource = BooksManager.BooksManager.GetBooksList(filter);
         }
-
-        private void uxBooksList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            EditBook();
-        }
-
+        
         private void EditBook()
         {
             Book book = uxBooksList.CurrentItem as Book;
@@ -230,6 +215,7 @@ namespace BooksHouse
                 }
             }
         }
+
         private void OrderByAuthor()
         {
             uxBooksList.Items.SortDescriptions.Clear();
@@ -263,7 +249,7 @@ namespace BooksHouse
             col.SortDirection = listSortDirection;
         }
 
-        private void SortByTitle_Click(object sender, RoutedEventArgs e)
+        private void OrderByTitle_Click(object sender, RoutedEventArgs e)
         {
             OrderByTitle();
         }
@@ -302,12 +288,12 @@ namespace BooksHouse
                 MessageBox.Show(result.OperationMessage);
         }
 
-        private void SortByAuthor_Click(object sender, RoutedEventArgs e)
+        private void OrderByAuthor_Click(object sender, RoutedEventArgs e)
         {
             OrderByAuthor();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private void EditBook_Click(object sender, RoutedEventArgs e)
         {
             EditBook();
         }
@@ -315,58 +301,9 @@ namespace BooksHouse
         private void uxSearchBox_KeyDown(object sender, KeyEventArgs e)
         {
             if(e.Key==Key.Enter)
-                RefreshBooksList(new BookFilter() { Title = uxSearchBox.Text, Author = uxSearchBox.Text, AdditionalInfo = uxSearchBox.Text, ISBN = uxSearchBox.Text });
+                RefreshBooksList(new BookFilter { Title = uxSearchBox.Text, Author = uxSearchBox.Text, AdditionalInfo = uxSearchBox.Text, ISBN = uxSearchBox.Text });
         }
 
         
     }
-
-    public static class CommandLibrary
-    {
-        private static readonly RoutedUICommand addBookItem = new RoutedUICommand("Add Book", "AddBook", typeof(CommandLibrary));
-        private static readonly RoutedUICommand addBookToCategoryItem = new RoutedUICommand("Add Book To Category", "AddBookToCategory", typeof(CommandLibrary));
-        private static readonly RoutedUICommand editCategoryItem = new RoutedUICommand("Edit Category", "EditCategory", typeof(CommandLibrary));
-        private static readonly RoutedUICommand refreshCategoryList = new RoutedUICommand("Refresh Category List", "RefreshCategoryList", typeof(CommandLibrary));
-        private static readonly RoutedUICommand addCategory = new RoutedUICommand("Add Category", "AddCategory", typeof(CommandLibrary));
-        private static readonly RoutedUICommand removeCategory = new RoutedUICommand("Remove Category", "RemoveCategory", typeof(CommandLibrary));
-        private static readonly RoutedUICommand searchBook = new RoutedUICommand("Search Book", "SearchBook", typeof(CommandLibrary));
-        private static readonly RoutedUICommand changeSkin = new RoutedUICommand("Change Skin", "ChangeSkin", typeof(CommandLibrary));
-
-        public static RoutedUICommand AddCategoryItem
-        {
-            get { return addCategory; }
-        }
-
-        public static RoutedUICommand RemoveCategoryItem
-        {
-            get { return removeCategory; }
-        }
-
-        public static RoutedUICommand RefreshCategoryList
-        {
-            get { return refreshCategoryList; }
-        }
-        public static RoutedUICommand EditCategoryItem
-        {
-            get { return editCategoryItem; }
-        }
-        public static RoutedUICommand AddBookToCategoryItem
-        {
-            get { return addBookToCategoryItem; }
-        }
-        public static RoutedUICommand AddBookItem
-        {
-            get { return addBookItem; }
-        }
-        public static RoutedUICommand SearchBookItem
-        {
-            get { return searchBook; }
-        }
-
-        public static RoutedUICommand ChangeSkinItem
-        {
-            get { return changeSkin; }
-        }
-    }
-
 }

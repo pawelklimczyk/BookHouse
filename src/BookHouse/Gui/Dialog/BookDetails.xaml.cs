@@ -51,7 +51,7 @@ namespace BooksHouse.Gui.Dialog
             window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             window.DataContext = obj;
             window.book = obj;
-            window.uxCategoryComboBox.ItemsSource = BooksManager.BooksManager.GetCategoryList(0);
+            window.uxCategoryComboBox.ItemsSource = BooksManager.BooksManager.GetCategoryList(Constants.ROOT_CATEGORY);
             var retStatus = window.ShowDialog();
 
             if (retStatus.HasValue && retStatus.Value)
@@ -88,17 +88,18 @@ namespace BooksHouse.Gui.Dialog
             {
                 try
                 {
-
                     book.Cover = System.Drawing.Image.FromFile(dialog.FileName);
-
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show("Error: Could not read file from disk. Original error: " + ex.Message);
                 }
-
             }
+        }
 
+        private void btn_deleteCover_Click(object sender, RoutedEventArgs e)
+        {
+            book.Cover = null;
         }
     }
 }

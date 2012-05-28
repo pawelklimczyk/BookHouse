@@ -19,9 +19,9 @@ namespace BooksHouse.BooksManager
         {
             OperationStatus<bool> status = new OperationStatus<bool>
                                                {
-                                             OperationMessage = "Database " + filename + " was created.",
-                                             Result = OperationResult.Passed
-                                         };
+                                                   OperationMessage = "Database " + filename + " was created.",
+                                                   Result = OperationResult.Passed
+                                               };
             try
             {
                 SQLiteConnection.CreateFile(filename);
@@ -281,7 +281,7 @@ namespace BooksHouse.BooksManager
             connection.Close();
         }
 
-        public static Book GetBook(int id)
+        public static Book GetBook(long id)
         {
             Book book = new Book();
             SQLiteConnection connection = new SQLiteConnection(String.Format(connectionString, Config.DatabaseName));
@@ -324,7 +324,7 @@ where b.id=@id";
 
         private static Book CreateBookRecord(DataRow row)
         {
-            Book book = new Book {Id = Int64.Parse(row["Id"].ToString())};
+            Book book = new Book { Id = Int64.Parse(row["Id"].ToString()) };
 
             if (row["CategoryId"] != DBNull.Value)
                 book.CategoryId = Int64.Parse(row["CategoryId"].ToString());
@@ -334,7 +334,10 @@ where b.id=@id";
             book.ISBN = row["isbn"].ToString();
             book.AdditionalInfo = row["additionalInfo"].ToString();
             book.EntryDate = Helpers.ConvertFromUnixTimestamp(long.Parse(row["entryDate"].ToString()));
-            book.Cover = Image.FromStream(new MemoryStream((byte[])row["cover"]));
+            
+            var cover=(row["cover"]) as byte[];
+            if (cover != null && cover.Length>0)
+                book.Cover = Image.FromStream(new MemoryStream((byte[])row["cover"]));
 
             return book;
         }
@@ -411,7 +414,7 @@ where b.id=@id";
                 {
                     foreach (DataRow row in table.Rows)
                     {
-                        Category category = new Category {Id = Int64.Parse(row["Id"].ToString())};
+                        Category category = new Category { Id = Int64.Parse(row["Id"].ToString()) };
 
                         if (row["ParentId"] != DBNull.Value)
                             category.ParentId = Int64.Parse(row["ParentId"].ToString());
@@ -553,7 +556,7 @@ where b.category_id=@category_id";
                 {
                     foreach (DataRow row in table.Rows)
                     {
-                        Category category = new Category {Id = Int64.Parse(row["Id"].ToString())};
+                        Category category = new Category { Id = Int64.Parse(row["Id"].ToString()) };
 
                         if (row["ParentId"] != DBNull.Value)
                             category.ParentId = Int64.Parse(row["ParentId"].ToString());
