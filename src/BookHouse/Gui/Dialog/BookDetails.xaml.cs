@@ -1,12 +1,14 @@
 ﻿#region Using directives
 
 using System;
+using System.Drawing.Imaging;
 using System.IO;
+using System.Drawing;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media.Imaging;
 using BooksHouse.Domain;
 using Microsoft.Win32;
+using Image = System.Drawing.Image;
 
 #endregion
 
@@ -19,7 +21,7 @@ namespace BooksHouse.Gui.Dialog
         {
             InitializeComponent();
             KeyDown += HandleKeys;
-            Closed+=CleanUp;
+            Closed += CleanUp;
         }
 
         private void CleanUp(object sender, EventArgs e)
@@ -83,12 +85,37 @@ namespace BooksHouse.Gui.Dialog
             dialog.Filter = "JPG iamges (.jpg)|*.jpg";
 
             Nullable<bool> result = dialog.ShowDialog();
-            
+
             if (result == true)
             {
                 try
                 {
-                    book.Cover = System.Drawing.Image.FromFile(dialog.FileName);
+                    Image photo = System.Drawing.Image.FromFile(dialog.FileName);
+
+                    using (Bitmap scaled = new Bitmap((int)Constants.IMAGE_WIDTH, (int)Constants.IMAGE_HEIGHT, System.Drawing.Imaging.PixelFormat.Format48bppRgb))
+                    {
+                        using (Graphics graphics = Graphics.FromImage(scaled))
+                        {
+                            int scaledWidth = (photo.Width * (int)Constants.IMAGE_HEIGHT) / photo.Height;
+                            if (scaledWidth < Constants.IMAGE_WIDTH)
+                            {
+                                graphics.DrawImage(photo, new Rectangle(0, 0, (int)Constants.IMAGE_WIDTH, (int)Constants.IMAGE_HEIGHT));
+                            }
+                            else
+                            {
+                                int diff = (int) (((scaledWidth - Constants.IMAGE_WIDTH) * (photo.Width/Constants.IMAGE_WIDTH))/2);
+                                graphics.DrawImage(photo, new Rectangle(0, 0, scaledWidth, (int)Constants.IMAGE_HEIGHT), new Rectangle(diff, 0, photo.Width - diff, photo.Height), GraphicsUnit.Pixel);
+
+                            }
+                        }
+
+                        MemoryStream MyStream = new MemoryStream();
+
+                        scaled.Save(MyStream, ImageFormat.Jpeg);
+
+
+                        book.Cover = Image.FromStream(MyStream);
+                    }
                 }
                 catch (Exception ex)
                 {

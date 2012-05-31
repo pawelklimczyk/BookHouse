@@ -13,7 +13,7 @@ namespace BooksHouse.BooksManager
     {
         private const string connectionString = "Data Source={0};Version=3;New=False;Compress=True";
         private const string createCategoryTable = "CREATE TABLE CATEGORY (id INTEGER PRIMARY KEY, parent_id INTEGER NULL, name TEXT)";
-        private const string createBooksTable = "CREATE TABLE BOOK (id INTEGER PRIMARY KEY, category_id INTEGER NULL, title TEXT, author TEXT, isbn TEXT UNIQUE, additionalInfo TEXT, entryDate INTEGER,photo BLOB)";
+        private const string createBooksTable = "CREATE TABLE BOOK (id INTEGER PRIMARY KEY, category_id INTEGER NULL, title TEXT, author TEXT, isbn TEXT UNIQUE, additionalInfoLine1 TEXT, additionalInfoLine2 TEXT, entryDate INTEGER,photo BLOB)";
 
         public static OperationStatus<bool> CraeteDatabase(string filename)
         {
@@ -64,13 +64,14 @@ namespace BooksHouse.BooksManager
             {
                 using (SQLiteCommand mycommand = new SQLiteCommand(connection))
                 {
-                    mycommand.CommandText = "INSERT INTO book (category_id, title, author, isbn, additionalInfo, entryDate) values(@categoryId, @title, @author, @isbn, @additionalInfo, @entryDate)";
+                    mycommand.CommandText = "INSERT INTO book (category_id, title, author, isbn, additionalInfoLine1, additionalInfoLine2, entryDate) values(@categoryId, @title, @author, @isbn, @additionalInfoLine1, @additionalInfoLine2, @entryDate)";
 
                     mycommand.Parameters.AddWithValue("@categoryId", book.CategoryId);
                     mycommand.Parameters.AddWithValue("@title", book.Title);
                     mycommand.Parameters.AddWithValue("@author", book.Author);
                     mycommand.Parameters.AddWithValue("@isbn", book.ISBN);
-                    mycommand.Parameters.AddWithValue("@additionalInfo", book.AdditionalInfo);
+                    mycommand.Parameters.AddWithValue("@additionalInfoLine1", book.AdditionalInfoLine1);
+                    mycommand.Parameters.AddWithValue("@additionalInfoLine2", book.AdditionalInfoLine2);
                     mycommand.Parameters.AddWithValue("@entryDate", Helpers.ConvertToUnixTimestamp(DateTime.Now));
                     mycommand.ExecuteNonQuery();
 
@@ -124,13 +125,14 @@ namespace BooksHouse.BooksManager
             {
                 using (SQLiteCommand mycommand = new SQLiteCommand(connection))
                 {
-                    mycommand.CommandText = "UPDATE book SET category_id=@categoryId, title=@title, author=@author,isbn=@isbn, additionalInfo=@additionalInfo, photo=@photo where id=@id";
+                    mycommand.CommandText = "UPDATE book SET category_id=@categoryId, title=@title, author=@author,isbn=@isbn, additionalInfoLine1=@additionalInfoLine1, additionalInfoLine2=@additionalInfoLine2, photo=@photo where id=@id";
                     mycommand.Parameters.Add("@photo", DbType.Binary, 20).Value = photo;
                     mycommand.Parameters.AddWithValue("@categoryId", book.CategoryId);
                     mycommand.Parameters.AddWithValue("@title", book.Title);
                     mycommand.Parameters.AddWithValue("@author", book.Author);
                     mycommand.Parameters.AddWithValue("@isbn", book.ISBN);
-                    mycommand.Parameters.AddWithValue("@additionalInfo", book.AdditionalInfo);
+                    mycommand.Parameters.AddWithValue("@additionalInfoLine1", book.AdditionalInfoLine1);
+                    mycommand.Parameters.AddWithValue("@additionalInfoLine2", book.AdditionalInfoLine2);
                     mycommand.Parameters.AddWithValue("@id", book.Id);
 
                     mycommand.ExecuteNonQuery();
@@ -208,7 +210,7 @@ namespace BooksHouse.BooksManager
             {
                 using (SQLiteCommand mycommand = new SQLiteCommand(connection))
                 {
-                    mycommand.CommandText = "UPDATE category SET parent_id=@parentId,name=@name where id=@id";
+                    mycommand.CommandText = "UPDATE category SET parent_id=@parentId, name=@name where id=@id";
 
                     mycommand.Parameters.AddWithValue("@parentId", category.ParentId);
                     mycommand.Parameters.AddWithValue("@name", category.Name);
@@ -287,14 +289,12 @@ namespace BooksHouse.BooksManager
             SQLiteConnection connection = new SQLiteConnection(String.Format(connectionString, Config.DatabaseName));
             connection.Open();
 
-
             using (SQLiteCommand mycommand = new SQLiteCommand(connection))
             {
 
-                mycommand.CommandText = @"SELECT c.name as CategoryName, b.id as Id, b.category_id as CategoryId, b.title as Title, b.author as Author, b.isbn as isbn, b.additionalInfo as additionalInfo, b.entryDate as entryDate, b.photo as cover from book b
+                mycommand.CommandText = @"SELECT c.name as CategoryName, b.id as Id, b.category_id as CategoryId, b.title as Title, b.author as Author, b.isbn as isbn, b.additionalInfoLine1 as additionalInfoLine1, b.additionalInfoLine2 as additionalInfoLine2, b.entryDate as entryDate, b.photo as cover from book b
 Left outer join category c on c.id=b.category_id
 where b.id=@id";
-                // mycommand.CommandText = "SELECT b.id as Id, b.category_id as CategoryId, b.title as Title, b.author as Author, b.isbn as isbn, b.additionalInfo as additionalInfo from book b where b.id=@id";
 
                 mycommand.Parameters.AddWithValue("@id", id);
 
@@ -332,7 +332,8 @@ where b.id=@id";
             book.Title = row["Title"].ToString();
             book.Author = row["Author"].ToString();
             book.ISBN = row["isbn"].ToString();
-            book.AdditionalInfo = row["additionalInfo"].ToString();
+            book.AdditionalInfoLine1 = row["additionalInfoLine1"].ToString();
+            book.AdditionalInfoLine2 = row["additionalInfoLine2"].ToString();
             book.EntryDate = Helpers.ConvertFromUnixTimestamp(long.Parse(row["entryDate"].ToString()));
             
             var cover=(row["cover"]) as byte[];
@@ -482,7 +483,7 @@ where b.id=@id";
             using (SQLiteCommand mycommand = new SQLiteCommand(connection))
             {
                 mycommand.CommandText =
-                    @"SELECT c.name as CategoryName, b.id as Id, b.category_id as CategoryId, b.title as Title, b.author as Author, b.isbn as isbn, b.additionalInfo as additionalInfo, b.entryDate as entryDate, b.photo as cover from book b
+                    @"SELECT c.name as CategoryName, b.id as Id, b.category_id as CategoryId, b.title as Title, b.author as Author, b.isbn as isbn, b.additionalInfoLine1 as additionalInfoLine1,b.additionalInfoLine2 as additionalInfoLine2, b.entryDate as entryDate, b.photo as cover from book b
 Left outer join category c on c.id=b.category_id
 where b.category_id=@category_id";
                 if (filter.HasTextFilter)
@@ -494,7 +495,9 @@ where b.category_id=@category_id";
                     if (!String.IsNullOrWhiteSpace(filter.Title))
                         search_list.Add(" upper(b.title) like upper(@title) ");
                     if (!String.IsNullOrWhiteSpace(filter.AdditionalInfo))
-                        search_list.Add(" upper(b.additionalInfo) like upper(@additionalInfo) ");
+                        search_list.Add(" upper(b.additionalInfoLine1) like upper(@additionalInfo) ");
+                    if (!String.IsNullOrWhiteSpace(filter.AdditionalInfo))
+                        search_list.Add(" upper(b.additionalInfoLine2) like upper(@additionalInfo) ");
                     if (!String.IsNullOrWhiteSpace(filter.ISBN))
                         search_list.Add(" upper(b.isbn) like upper(@isbn) ");
 

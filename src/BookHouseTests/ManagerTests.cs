@@ -1,10 +1,11 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
 using BooksHouse.Domain;
 using MbUnit.Framework;
 using BooksHouse.BooksManager;
 using System.Linq;
 
-namespace BooksHouseTests
+namespace BookHouseTests
 {
     [TestFixture]
     public class ManagerTests
@@ -32,12 +33,12 @@ namespace BooksHouseTests
             BooksManager.RunSQL("INSERT INTO CATEGORY VALUES (10,9,'category 2.1')");
 
             //books
-            BooksManager.RunSQL("INSERT INTO BOOK VALUES (1,NULL,'title 1','author 1','ISBN1','123',1,NULL)");
-            BooksManager.RunSQL("INSERT INTO BOOK VALUES (2,1,'title 2','author 2','234','234',1,NULL)");
-            BooksManager.RunSQL("INSERT INTO BOOK VALUES (3,3,'title 3','author 3','345','345',1,NULL)");
-            BooksManager.RunSQL("INSERT INTO BOOK VALUES (4,3,'title 4','author 4','456','456',1,NULL)");
-            BooksManager.RunSQL("INSERT INTO BOOK VALUES (5,5,'title 5 - to delete','author 5','567','567',1,NULL)");
-            BooksManager.RunSQL("INSERT INTO BOOK VALUES (6,5,'title 5 - category to delete','author 5','678','678',1,NULL)");
+            BooksManager.RunSQL("INSERT INTO BOOK VALUES (1,NULL,'title 1','author 1','ISBN1','123','123',1,NULL)");
+            BooksManager.RunSQL("INSERT INTO BOOK VALUES (2,1,'title 2','author 2','234','234','123',1,NULL)");
+            BooksManager.RunSQL("INSERT INTO BOOK VALUES (3,3,'title 3','author 3','345','345','123',1,NULL)");
+            BooksManager.RunSQL("INSERT INTO BOOK VALUES (4,3,'title 4','author 4','456','456','123',1,NULL)");
+            BooksManager.RunSQL("INSERT INTO BOOK VALUES (5,5,'title 5 - to delete','author 5','567','567','123',1,NULL)");
+            BooksManager.RunSQL("INSERT INTO BOOK VALUES (6,5,'title 5 - category to delete','author 5','678','678','123',1,NULL)");
 
             #endregion
         }
@@ -150,7 +151,7 @@ namespace BooksHouseTests
         [Test]
         public void ShouldAddBook()
         {
-            Book book = new Book { CategoryId = 1, Title = "Book title", Author = "pawel", AdditionalInfo = "Additional Info", ISBN = "222222" };
+            Book book = new Book { CategoryId = 1, Title = "Book title", Author = "pawel", AdditionalInfoLine1 = "Additional Info", ISBN = "222222" };
             BooksManager.InsertBook(book);
             Assert.GreaterThan(book.Id, 0);
         }
@@ -158,7 +159,7 @@ namespace BooksHouseTests
         [Test]
         public void ShouldAddBookWithCover()
         {
-            Book book = new Book { CategoryId = 1, Title = "Book title", Author = "pawel", AdditionalInfo = "Additional Info", ISBN = "222224", Cover = new Bitmap(4, 4) };
+            Book book = new Book { CategoryId = 1, Title = "Book title", Author = "pawel", AdditionalInfoLine1 = "Additional Info", ISBN = "222224", Cover = new Bitmap(4, 4) };
             BooksManager.InsertBook(book);
             Assert.GreaterThan(book.Id, 0);
         }
@@ -166,7 +167,7 @@ namespace BooksHouseTests
         [Test]
         public void ShouldAddAndRemoveCoverFromBook()
         {
-            Book book = new Book { CategoryId = 1, Title = "Book title", Author = "pawel", AdditionalInfo = "Additional Info", ISBN = "222226", Cover = new Bitmap(4, 4) };
+            Book book = new Book { CategoryId = 1, Title = "Book title", Author = "pawel", AdditionalInfoLine1 = "Additional Info", ISBN = "222226", Cover = new Bitmap(4, 4) };
             var status = BooksManager.InsertBook(book);
             Assert.GreaterThan(book.Id, 0);
             Assert.IsNotNull(status.Data.Cover);
@@ -186,7 +187,7 @@ namespace BooksHouseTests
             book.Title = "edited";
             book.Author = "grzes";
             book.ISBN = "0909090909";
-            book.AdditionalInfo = "additional";
+            book.AdditionalInfoLine1 = "additional";
             book.CategoryId = 3;
             BooksManager.UpdateBook(book);
             book = BooksManager.GetBook(4);
@@ -195,19 +196,43 @@ namespace BooksHouseTests
             Assert.AreEqual("edited", book.Title);
             Assert.AreEqual("grzes", book.Author);
             Assert.AreEqual("0909090909", book.ISBN);
-            Assert.AreEqual("additional", book.AdditionalInfo);
+            Assert.AreEqual("additional", book.AdditionalInfoLine1);
         }
 
         [Test]
-        public void ShouldAddBookWithExistingISBN()
+        public void ShouldAddTwoBooksWithEmptyISBN()
         {
-            Book book = new Book { CategoryId = 1, Title = "Book title", Author = "pawel", AdditionalInfo = "Additional Info", ISBN = "ISBN1" };
+            Book book = new Book { CategoryId = 1, Title = "Book title", Author = "pawel", AdditionalInfoLine1 = "Additional Info"};
+            var operation = BooksManager.InsertBook(book);
+            Assert.AreEqual(operation.Result, OperationResult.Passed); 
+
+            Book book2 = new Book { CategoryId = 1, Title = "Book title", Author = "pawel", AdditionalInfoLine1 = "Additional Info" };
+            operation = BooksManager.InsertBook(book2);
+            Assert.AreEqual(operation.Result, OperationResult.Passed); 
+        }
+
+        [Test]
+        public void ShouldUpdateBookWithEmptyISBN()
+        {
+            Book book = new Book { CategoryId = 1, Title = "Book title", Author = "pawel", AdditionalInfoLine1 = "Additional Info", ISBN = "ISBN13434"};
+            var operation = BooksManager.InsertBook(book);
+            Assert.AreEqual(operation.Result, OperationResult.Passed);
+            
+            book.ISBN = String.Empty;
+            operation = BooksManager.UpdateBook(book);
+            Assert.AreEqual(operation.Result, OperationResult.Passed);
+        }
+
+        [Test]
+        public void ShouldNotAddBookWithExistingISBN()
+        {
+            Book book = new Book { CategoryId = 1, Title = "Book title", Author = "pawel", AdditionalInfoLine1 = "Additional Info", ISBN = "ISBN1" };
             var operation = BooksManager.InsertBook(book);
             Assert.AreEqual(operation.Result, OperationResult.Failed);
         }
 
         [Test]
-        public void ShouldUpdateBookWithExistingISBN()
+        public void ShouldNotUpdateBookWithExistingISBN()
         {
             Book book = BooksManager.GetBook(4);
             string originalISBN = book.ISBN;

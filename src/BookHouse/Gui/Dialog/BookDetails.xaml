@@ -1,12 +1,14 @@
 ﻿<Window x:Class="BooksHouse.Gui.Dialog.BookDetails"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:Converters="clr-namespace:BooksHouse.Gui.Converters" Title="BookDetails" Height="300" Width="300" WindowStartupLocation="CenterOwner" Background="#98cafa" >
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+        xmlns:Converters="clr-namespace:BooksHouse.Gui.Converters" 
+        Title="BookDetails" Height="400" Width="300" 
+        WindowStartupLocation="CenterOwner" Background="#98cafa" >
     <Window.Resources>
         <Converters:ImageConverter x:Key="imageConverter" />
     </Window.Resources>
     <DockPanel LastChildFill="true" >
-        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Left">
-
+        <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Left"> 
             <Button Margin="5" Name="btn_accept" Click="btn_accept_Click" Width="80">
                 <Button.Style>
                     <Style TargetType="{x:Type Button}">
@@ -29,7 +31,8 @@
                 <RowDefinition Height="24"/>
                 <RowDefinition Height="24"/>
                 <RowDefinition Height="24"/>
-                <RowDefinition Height="100"/>
+                <RowDefinition Height="24"/>
+                <RowDefinition Height="120"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="120"/>
@@ -45,15 +48,17 @@
             <Label VerticalAlignment="Center" HorizontalAlignment="Left" Grid.Row="3" Grid.Column="0">ISBN</Label>
             <TextBox VerticalAlignment="Center" HorizontalAlignment="Stretch" Grid.Row="3" Grid.Column="1" Text="{Binding ISBN}"></TextBox>
             <Label VerticalAlignment="Center" HorizontalAlignment="Left" Grid.Row="4" Grid.Column="0">Additional inform.</Label>
-            <TextBox VerticalAlignment="Center" HorizontalAlignment="Stretch" Grid.Row="4" Grid.Column="1" Text="{Binding AdditionalInfo}"></TextBox>
-            <Image VerticalAlignment="Center" HorizontalAlignment="Stretch" Grid.Row="5" Grid.Column="0" Source="{Binding Cover,Converter={StaticResource imageConverter}}"/>
-            <StackPanel Grid.Row="5" Grid.Column="1" VerticalAlignment="Center">
+            <TextBox VerticalAlignment="Center" HorizontalAlignment="Stretch" Grid.Row="4" Grid.Column="1" Text="{Binding AdditionalInfoLine1}"></TextBox>
+            <TextBox VerticalAlignment="Center" HorizontalAlignment="Stretch" Grid.Row="5" Grid.Column="1" Text="{Binding AdditionalInfoLine2}"></TextBox>
+            <Image VerticalAlignment="Center" HorizontalAlignment="Stretch" Grid.Row="6" Grid.Column="0" Source="{Binding Cover,Converter={StaticResource imageConverter}}"/>
+            <StackPanel Grid.Row="6" Grid.Column="1" VerticalAlignment="Center">
                 <Button Name="btn_selectCover" Click="btn_selectCover_Click" Width="80" Height="25" >
                     <Button.Style>
                         <Style TargetType="{x:Type Button}">
                             <Setter Property="Background" Value="White"/>
                         </Style>
-                    </Button.Style> Select cover
+                    </Button.Style> 
+                    Select cover
                 </Button>
                 <Button Name="btn_deleteCover" Click="btn_deleteCover_Click" Width="80" Height="25" >
                     <Button.Style>
@@ -65,8 +70,7 @@
                                     </DataTrigger.Setters>
                                 </DataTrigger>
                             </Style.Triggers>
-                            <Setter Property="Background" Value="White"/>
-
+                            <Setter Property="Background" Value="White"/>  
                         </Style>
                     </Button.Style> Delete cover
                 </Button>

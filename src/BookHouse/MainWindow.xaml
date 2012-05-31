@@ -126,7 +126,7 @@
                                     </StackPanel>
                                 </StackPanel>
 
-                                <Image DockPanel.Dock="Left" Width="80" Height="50" Source="{Binding Path=Cover, Converter={StaticResource imageConverter} }"/>                                
+                                <Image DockPanel.Dock="Left" Width="{x:Static Domain:Constants.IMAGE_WIDTH}" Height="{x:Static Domain:Constants.IMAGE_HEIGHT}" Source="{Binding Path=Cover, Converter={StaticResource imageConverter} }"/>                                
 
                                 <StackPanel DockPanel.Dock="Right" Width="80" Height="130" Margin="5">
                                     <Button Click="EditBook_Click">

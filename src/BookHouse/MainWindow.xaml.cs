@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Linq;
+using BookHouse;
 using BooksHouse.Domain;
 using BooksHouse.Gui.Dialog;
 
@@ -123,8 +124,8 @@ namespace BooksHouse
             if (cat != null)
             {
                 selectedCategoryId = cat.Id;
-                RefreshBooksList(new BookFilter() { RootCategoryId = selectedCategoryId });
-                OrderByTitle();
+                RefreshBooksList(new BookFilter { RootCategoryId = selectedCategoryId });
+                orderByTitle();
             }
         }
 
@@ -178,15 +179,11 @@ namespace BooksHouse
 
         private void OnChangeSkinItemExecute(object sender, ExecutedRoutedEventArgs e)
         {
-            Application.Current.Resources.Clear();
-            Application.Current.Resources.MergedDictionaries.Clear();
             ComboBoxItem item = CurrentSkinComboBox.SelectedItem as ComboBoxItem;
 
             if (item != null)
             {
-                Uri rd1 = new Uri("/BookHouse;component/"+item.Tag, UriKind.RelativeOrAbsolute);
-                ResourceDictionary dictionary = Application.LoadComponent(rd1) as ResourceDictionary;
-                Application.Current.Resources.MergedDictionaries.Add(dictionary);
+                ThemeManager.UseTheme((string) item.Tag);
             }
         }
 
@@ -194,7 +191,7 @@ namespace BooksHouse
         {
             uxBooksList.ItemsSource = BooksManager.BooksManager.GetBooksList(filter);
         }
-        
+
         private void EditBook()
         {
             Book book = uxBooksList.CurrentItem as Book;
@@ -216,7 +213,7 @@ namespace BooksHouse
             }
         }
 
-        private void OrderByAuthor()
+        private void orderByAuthor()
         {
             uxBooksList.Items.SortDescriptions.Clear();
 
@@ -228,7 +225,7 @@ namespace BooksHouse
             uxBooksList.Items.Refresh();
         }
 
-        private void OrderByTitle()
+        private void orderByTitle()
         {
             uxBooksList.Items.SortDescriptions.Clear();
 
@@ -251,14 +248,14 @@ namespace BooksHouse
 
         private void OrderByTitle_Click(object sender, RoutedEventArgs e)
         {
-            OrderByTitle();
+            orderByTitle();
         }
 
         private void CanAddBookItemExecute(object sender, CanExecuteRoutedEventArgs e)
         {
             e.CanExecute = !String.IsNullOrWhiteSpace(uxAddBookTitle.Text) &&
-                           !String.IsNullOrWhiteSpace(uxAddBookAuthor.Text) &&
-                           !String.IsNullOrWhiteSpace(uxAddBookISBN.Text);
+                           !String.IsNullOrWhiteSpace(uxAddBookAuthor.Text);
+            //&& !String.IsNullOrWhiteSpace(uxAddBookISBN.Text);
             e.Handled = true;
         }
 
@@ -277,7 +274,7 @@ namespace BooksHouse
                 uxAddBookTitle.Text = String.Empty;
                 uxAddBookAuthor.Text = String.Empty;
                 uxAddBookISBN.Text = String.Empty;
-                RefreshBooksList(new BookFilter() { RootCategoryId = selectedCategoryId });
+                RefreshBooksList(new BookFilter { RootCategoryId = selectedCategoryId });
                 var x = (uxBooksList.ItemsSource as IList<Book>).FirstOrDefault(b => b.Id == book.Id);
                 uxBooksList.CurrentItem = x;
                 uxBooksList.SelectedItem = x;
@@ -290,7 +287,7 @@ namespace BooksHouse
 
         private void OrderByAuthor_Click(object sender, RoutedEventArgs e)
         {
-            OrderByAuthor();
+            orderByAuthor();
         }
 
         private void EditBook_Click(object sender, RoutedEventArgs e)
@@ -300,10 +297,8 @@ namespace BooksHouse
 
         private void uxSearchBox_KeyDown(object sender, KeyEventArgs e)
         {
-            if(e.Key==Key.Enter)
+            if (e.Key == Key.Enter)
                 RefreshBooksList(new BookFilter { Title = uxSearchBox.Text, Author = uxSearchBox.Text, AdditionalInfo = uxSearchBox.Text, ISBN = uxSearchBox.Text });
         }
-
-        
     }
 }

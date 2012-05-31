@@ -32,7 +32,8 @@ namespace BooksHouse.Domain
         }
         public string Title { get; set; }
         public string Author { get; set; }
-        public string AdditionalInfo { get; set; }
+        public string AdditionalInfoLine1 { get; set; }
+        public string AdditionalInfoLine2 { get; set; }
         public string ISBN { get; set; }
         public DateTime EntryDate { get; set; }
 
