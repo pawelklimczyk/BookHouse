@@ -1,12 +1,8 @@
 
-/.svn
-/src/_ReSharper.BookHouse
+.svn
+src/_ReSharper.*
 *.user
 *.suo
 bin
 obj
-/src/Build/BookHouse.exe
-/src/Build/BookHouse.exe.config
-/src/Build/BookHouse.pdb
-/src/Build/System.Data.SQLite.DLL
-/src/Build/System.Data.SQLite.xml
+/src/Build/*

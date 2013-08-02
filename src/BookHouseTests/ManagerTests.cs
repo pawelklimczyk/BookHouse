@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Drawing;
-using BooksHouse.Domain;
-using MbUnit.Framework;
-using BooksHouse.BooksManager;
 using System.Linq;
+using BooksHouse.BooksManager;
+using BooksHouse.Domain;
+using NUnit.Framework;
 
 namespace BookHouseTests
 {
-    [TestFixture]
-    public class ManagerTests
+    [SetUpFixture]
+    public class TestsSetup
     {
         private const string database = "database_test.db";
 
-        [FixtureSetUp]
+        [SetUp]
         public void DataSetup()
         {
             BooksManager.CraeteDatabase(database);
@@ -37,12 +37,18 @@ namespace BookHouseTests
             BooksManager.RunSQL("INSERT INTO BOOK VALUES (2,1,'title 2','author 2','234','234','123',1,NULL)");
             BooksManager.RunSQL("INSERT INTO BOOK VALUES (3,3,'title 3','author 3','345','345','123',1,NULL)");
             BooksManager.RunSQL("INSERT INTO BOOK VALUES (4,3,'title 4','author 4','456','456','123',1,NULL)");
-            BooksManager.RunSQL("INSERT INTO BOOK VALUES (5,5,'title 5 - to delete','author 5','567','567','123',1,NULL)");
-            BooksManager.RunSQL("INSERT INTO BOOK VALUES (6,5,'title 5 - category to delete','author 5','678','678','123',1,NULL)");
+            BooksManager.RunSQL(
+                "INSERT INTO BOOK VALUES (5,5,'title 5 - to delete','author 5','567','567','123',1,NULL)");
+            BooksManager.RunSQL(
+                "INSERT INTO BOOK VALUES (6,5,'title 5 - category to delete','author 5','678','678','123',1,NULL)");
 
             #endregion
         }
+    }
 
+    [TestFixture]
+    public class ManagerTests
+    {
         [Test]
         public void ShouldGetCategory()
         {
@@ -62,9 +68,9 @@ namespace BookHouseTests
         [Test]
         public void ShouldAddCategory()
         {
-            Category cat = new Category { ParentId = 1, Name = "new category" };
+            Category cat = new Category {ParentId = 1, Name = "new category"};
             BooksManager.InsertCategory(cat);
-            Assert.GreaterThan(cat.Id, 0);
+            Assert.Greater(cat.Id, 0);
         }
 
         [Test]
@@ -151,33 +157,56 @@ namespace BookHouseTests
         [Test]
         public void ShouldAddBook()
         {
-            Book book = new Book { CategoryId = 1, Title = "Book title", Author = "pawel", AdditionalInfoLine1 = "Additional Info", ISBN = "222222" };
+            Book book = new Book
+                {
+                    CategoryId = 1,
+                    Title = "Book title",
+                    Author = "pawel",
+                    AdditionalInfoLine1 = "Additional Info",
+                    ISBN = "222222"
+                };
             BooksManager.InsertBook(book);
-            Assert.GreaterThan(book.Id, 0);
+            Assert.Greater(book.Id, 0);
         }
 
         [Test]
         public void ShouldAddBookWithCover()
         {
-            Book book = new Book { CategoryId = 1, Title = "Book title", Author = "pawel", AdditionalInfoLine1 = "Additional Info", ISBN = "222224", Cover = new Bitmap(4, 4) };
+            Book book = new Book
+                {
+                    CategoryId = 1,
+                    Title = "Book title",
+                    Author = "pawel",
+                    AdditionalInfoLine1 = "Additional Info",
+                    ISBN = "222224",
+                    Cover = new Bitmap(4, 4)
+                };
             BooksManager.InsertBook(book);
-            Assert.GreaterThan(book.Id, 0);
+            Assert.Greater(book.Id, 0);
         }
 
         [Test]
         public void ShouldAddAndRemoveCoverFromBook()
         {
-            Book book = new Book { CategoryId = 1, Title = "Book title", Author = "pawel", AdditionalInfoLine1 = "Additional Info", ISBN = "222226", Cover = new Bitmap(4, 4) };
+            Book book = new Book
+                {
+                    CategoryId = 1,
+                    Title = "Book title",
+                    Author = "pawel",
+                    AdditionalInfoLine1 = "Additional Info",
+                    ISBN = "222226",
+                    Cover = new Bitmap(4, 4)
+                };
             var status = BooksManager.InsertBook(book);
-            Assert.GreaterThan(book.Id, 0);
+            Assert.Greater(book.Id, 0);
             Assert.IsNotNull(status.Data.Cover);
 
             status.Data.Cover = null;
             var status2 = BooksManager.UpdateBook(book);
             Assert.AreEqual(status2.Result, OperationResult.Passed);
 
-            var book_with_no_cover = BooksManager.GetBook(book.Id);
-            Assert.IsNull(book_with_no_cover.Cover);
+            var bookWithNoCover = BooksManager.GetBook(book.Id);
+            Assert.IsNull(bookWithNoCover.Cover);
         }
 
         [Test]
@@ -202,22 +231,41 @@ namespace BookHouseTests
         [Test]
         public void ShouldAddTwoBooksWithEmptyISBN()
         {
-            Book book = new Book { CategoryId = 1, Title = "Book title", Author = "pawel", AdditionalInfoLine1 = "Additional Info"};
+            Book book = new Book
+                {
+                    CategoryId = 1,
+                    Title = "Book title",
+                    Author = "pawel",
+                    AdditionalInfoLine1 = "Additional Info"
+                };
             var operation = BooksManager.InsertBook(book);
-            Assert.AreEqual(operation.Result, OperationResult.Passed); 
+            Assert.AreEqual(operation.Result, OperationResult.Passed);
 
-            Book book2 = new Book { CategoryId = 1, Title = "Book title", Author = "pawel", AdditionalInfoLine1 = "Additional Info" };
+            Book book2 = new Book
+                {
+                    CategoryId = 1,
+                    Title = "Book title",
+                    Author = "pawel",
+                    AdditionalInfoLine1 = "Additional Info"
+                };
             operation = BooksManager.InsertBook(book2);
-            Assert.AreEqual(operation.Result, OperationResult.Passed); 
+            Assert.AreEqual(operation.Result, OperationResult.Passed);
         }
 
         [Test]
         public void ShouldUpdateBookWithEmptyISBN()
         {
-            Book book = new Book { CategoryId = 1, Title = "Book title", Author = "pawel", AdditionalInfoLine1 = "Additional Info", ISBN = "ISBN13434"};
+            Book book = new Book
+                {
+                    CategoryId = 1,
+                    Title = "Book title",
+                    Author = "pawel",
+                    AdditionalInfoLine1 = "Additional Info",
+                    ISBN = "ISBN13434"
+                };
             var operation = BooksManager.InsertBook(book);
             Assert.AreEqual(operation.Result, OperationResult.Passed);
-            
+
             book.ISBN = String.Empty;
             operation = BooksManager.UpdateBook(book);
             Assert.AreEqual(operation.Result, OperationResult.Passed);
@@ -226,7 +274,14 @@ namespace BookHouseTests
         [Test]
         public void ShouldNotAddBookWithExistingISBN()
         {
-            Book book = new Book { CategoryId = 1, Title = "Book title", Author = "pawel", AdditionalInfoLine1 = "Additional Info", ISBN = "ISBN1" };
+            Book book = new Book
+                {
+                    CategoryId = 1,
+                    Title = "Book title",
+                    Author = "pawel",
+                    AdditionalInfoLine1 = "Additional Info",
+                    ISBN = "ISBN1"
+                };
             var operation = BooksManager.InsertBook(book);
             Assert.AreEqual(operation.Result, OperationResult.Failed);
         }
@@ -252,16 +307,18 @@ namespace BookHouseTests
             book = BooksManager.GetBook(5);
             Assert.IsNull(book);
         }
+
         [Test]
         public void ShouldFindManyBookInSearch()
         {
             var list = BooksManager.GetBooksList(new BookFilter());
-            Assert.GreaterThan(list.Count, 0);
+            Assert.Greater(list.Count, 0);
         }
+
         [Test]
         public void ShouldFindOneBookInSearch()
         {
-            var list = BooksManager.GetBooksList(new BookFilter { Author = "author 2" });
+            var list = BooksManager.GetBooksList(new BookFilter {Author = "author 2"});
             Assert.AreEqual(list.Count, 1);
         }
     }
