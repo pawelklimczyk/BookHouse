@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Linq;
 using BookHouse;
+using BookHouse.Gui.Dialog;
 using BooksHouse.Domain;
 using BooksHouse.Gui.Dialog;
 
@@ -73,7 +74,9 @@ namespace BooksHouse
 
         private void CanRemoveCategoryItemExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            //throw new NotImplementedException();
+            Category cat = e.Parameter as Category;
+            e.CanExecute = (cat != null);
+            e.Handled = true;
         }
 
         private void CanRefreshCategoryListExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -89,7 +92,21 @@ namespace BooksHouse
 
         private void OnRemoveListItemExecute(object sender, ExecutedRoutedEventArgs e)
         {
-            // throw new NotImplementedException();
+            Category cat = e.Parameter as Category;
+
+            var result = BooksManager.BooksManager.DeleteCategory(cat);
+
+            if (result.Result == OperationResult.Passed)
+            {
+                RefreshCategoryList();
+                RefreshBooksList(new BookFilter() { RootCategoryId = 0 });
+
+                uxBooksList.CurrentItem = null;
+            }
+            else
+                MessageBox.Show(result.OperationMessage);
+
+            e.Handled = true;
         }
 
         private void CanEditCategoryItemExecute(object sender, CanExecuteRoutedEventArgs e)

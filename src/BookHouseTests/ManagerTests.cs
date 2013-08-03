@@ -170,6 +170,36 @@ namespace BookHouseTests
         }
 
         [Test]
+        public void BooksInDeletedCategoryShouldBeVisibleInMainCategory()
+        {
+            string isbn = "347563487562347856";
+            Category newCategory = new Category
+            {
+                    Name = "Category to delete",
+                    Parent = BooksManager.GetCategoryList(-1)[0]
+                };
+
+            var result=BooksManager.InsertCategory(newCategory);
+
+            Book newBook = new Book
+                {
+                    CategoryId = result.Data.Id,
+                    Title = "Book title",
+                    Author = "pawel",
+                    AdditionalInfoLine1 = "Additional Info",
+                    ISBN = isbn
+                };
+
+            BooksManager.InsertBook(newBook);
+
+            BooksManager.DeleteCategory(newCategory);
+            var books = BooksManager.GetBooksList(new BookFilter() {ISBN = isbn});
+            Assert.AreEqual(books.Count,1);
+            Assert.IsNull(books[0].Category); ;
+        }
+
+
+        [Test]
         public void ShouldAddBookWithCover()
         {
             Book book = new Book

@@ -32,7 +32,7 @@ namespace BooksHouse.Domain
 
         public IList<Category> SubCategories { get; set; }
         public string Name { get; set; }
-       
+
         // override object.Equals
         public override bool Equals(object obj)
         {

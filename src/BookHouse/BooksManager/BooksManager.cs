@@ -35,11 +35,14 @@ namespace BooksHouse.BooksManager
                     {
                         mycommand.CommandText = createCategoryTable;
                         mycommand.ExecuteNonQuery();
+
                         mycommand.CommandText = createBooksTable;
                         mycommand.ExecuteNonQuery();
                     }
+
                     mytransaction.Commit();
                 }
+
                 connection.Close();
                 #endregion
             }
@@ -234,7 +237,7 @@ namespace BooksHouse.BooksManager
 
             using (SQLiteTransaction mytransaction = connection.BeginTransaction())
             {
-                SetCategoryToNullInBookTable(category.Id, connection);
+                SetCategoryToMainInBookTable(category.Id, connection);
                 using (SQLiteCommand mycommand = new SQLiteCommand(connection))
                 {
 
@@ -251,17 +254,16 @@ namespace BooksHouse.BooksManager
             return new OperationStatus<bool> { OperationMessage = "Kategoria zosta³a usuniêta", Result = OperationResult.Passed, };
         }
 
-        private static void SetCategoryToNullInBookTable(long id, SQLiteConnection connection)
+        private static void SetCategoryToMainInBookTable(long id, SQLiteConnection connection)
         {
             using (SQLiteCommand mycommand = new SQLiteCommand(connection))
             {
-                mycommand.CommandText = "UPDATE book set category_id=NULL where category_id=@id";
+                mycommand.CommandText = "UPDATE book set category_id=0 where category_id=@id";
 
                 mycommand.Parameters.AddWithValue("@id", id);
 
                 mycommand.ExecuteNonQuery();
             }
-
         }
 
         public static void RunSQL(string sql)
@@ -445,7 +447,7 @@ where b.id=@id";
                     }
                 }
                 if (rootId == 0)
-                    list.Insert(0, new Category { Id = 0, Name = "Categories (all books)", ParentId = 0 });
+                    list.Insert(0, new Category { Id = 0, Name = "ALL BOOKS", ParentId = 0 });
             }
             return list;
         }
