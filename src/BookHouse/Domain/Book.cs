@@ -57,5 +57,14 @@ namespace BooksHouse.Domain
         {
             PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
+
+        public Book Copy()
+        {
+            Book newBook =(Book) this.MemberwiseClone();
+            if (this.Cover != null)
+                newBook.Cover = (Image) this.Cover.Clone();
+
+            return newBook;
+        }
     }
 }

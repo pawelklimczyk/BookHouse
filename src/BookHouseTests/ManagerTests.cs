@@ -68,7 +68,7 @@ namespace BookHouseTests
         [Test]
         public void ShouldAddCategory()
         {
-            Category cat = new Category {ParentId = 1, Name = "new category"};
+            Category cat = new Category { ParentId = 1, Name = "new category" };
             BooksManager.InsertCategory(cat);
             Assert.Greater(cat.Id, 0);
         }
@@ -175,11 +175,11 @@ namespace BookHouseTests
             string isbn = "347563487562347856";
             Category newCategory = new Category
             {
-                    Name = "Category to delete",
-                    Parent = BooksManager.GetCategoryList(-1)[0]
-                };
+                Name = "Category to delete",
+                Parent = BooksManager.GetCategoryList(-1)[0]
+            };
 
-            var result=BooksManager.InsertCategory(newCategory);
+            var result = BooksManager.InsertCategory(newCategory);
 
             Book newBook = new Book
                 {
@@ -193,8 +193,8 @@ namespace BookHouseTests
             BooksManager.InsertBook(newBook);
 
             BooksManager.DeleteCategory(newCategory);
-            var books = BooksManager.GetBooksList(new BookFilter() {ISBN = isbn});
-            Assert.AreEqual(books.Count,1);
+            var books = BooksManager.GetBooksList(new BookFilter() { ISBN = isbn });
+            Assert.AreEqual(books.Count, 1);
             Assert.IsNull(books[0].Category); ;
         }
 
@@ -208,11 +208,20 @@ namespace BookHouseTests
                     Title = "Book title",
                     Author = "pawel",
                     AdditionalInfoLine1 = "Additional Info",
-                    ISBN = "222224",
-                    Cover = new Bitmap(4, 4)
+                    ISBN = "222224"
                 };
+
+            Bitmap bitmap = new Bitmap(4, 4);
+            for (int x = 0; x < bitmap.Height; ++x)
+                for (int y = 0; y < bitmap.Width; ++y)
+                    bitmap.SetPixel(x, y, Color.Red);
+            book.Cover = bitmap;
+
             BooksManager.InsertBook(book);
             Assert.Greater(book.Id, 0);
+
+            var bookFromDatabase = BooksManager.GetBook(book.Id);
+            Assert.IsNotNull(bookFromDatabase.Cover);
         }
 
         [Test]
@@ -224,9 +233,17 @@ namespace BookHouseTests
                     Title = "Book title",
                     Author = "pawel",
                     AdditionalInfoLine1 = "Additional Info",
-                    ISBN = "222226",
-                    Cover = new Bitmap(4, 4)
+                    ISBN = "222226"
                 };
+
+
+            Bitmap bitmap = new Bitmap(4, 4);
+            for (int x = 0; x < bitmap.Height; ++x)
+                for (int y = 0; y < bitmap.Width; ++y)
+                    bitmap.SetPixel(x, y, Color.Red);
+
+            book.Cover = bitmap;
+
             var status = BooksManager.InsertBook(book);
             Assert.Greater(book.Id, 0);
             Assert.IsNotNull(status.Data.Cover);
@@ -348,7 +365,7 @@ namespace BookHouseTests
         [Test]
         public void ShouldFindOneBookInSearch()
         {
-            var list = BooksManager.GetBooksList(new BookFilter {Author = "author 2"});
+            var list = BooksManager.GetBooksList(new BookFilter { Author = "author 2" });
             Assert.AreEqual(list.Count, 1);
         }
     }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SQLite;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using BooksHouse.Domain;
 using System.Linq;
@@ -62,30 +63,42 @@ namespace BooksHouse.BooksManager
 
             if (!CheckUniqueISBN(connection, book.ISBN, 0))
                 return new OperationStatus<Book> { OperationMessage = "Podany ISBN jest pusty lub jest ju¿ w bazie danych", Result = OperationResult.Failed, Data = book };
-
-            using (SQLiteTransaction mytransaction = connection.BeginTransaction())
-            {
-                using (SQLiteCommand mycommand = new SQLiteCommand(connection))
+            byte[] photo = new byte[0];
+            if (book.Cover != null)
+                using (MemoryStream ms = new MemoryStream())
                 {
-                    mycommand.CommandText = "INSERT INTO book (category_id, title, author, isbn, additionalInfoLine1, additionalInfoLine2, entryDate) values(@categoryId, @title, @author, @isbn, @additionalInfoLine1, @additionalInfoLine2, @entryDate)";
-
-                    mycommand.Parameters.AddWithValue("@categoryId", book.CategoryId);
-                    mycommand.Parameters.AddWithValue("@title", book.Title);
-                    mycommand.Parameters.AddWithValue("@author", book.Author);
-                    mycommand.Parameters.AddWithValue("@isbn", book.ISBN);
-                    mycommand.Parameters.AddWithValue("@additionalInfoLine1", book.AdditionalInfoLine1);
-                    mycommand.Parameters.AddWithValue("@additionalInfoLine2", book.AdditionalInfoLine2);
-                    mycommand.Parameters.AddWithValue("@entryDate", Helpers.ConvertToUnixTimestamp(DateTime.Now));
-                    mycommand.ExecuteNonQuery();
-
-                    mycommand.CommandText = @"select last_insert_rowid()";
-                    long lastId = (long)mycommand.ExecuteScalar();
-
-                    book.Id = lastId;
-
+                    book.Cover.Save(ms, ImageFormat.Bmp);
+                    photo = ms.ToArray();
                 }
-                mytransaction.Commit();
-            }
+
+                using (SQLiteTransaction mytransaction = connection.BeginTransaction())
+                {
+                    using (SQLiteCommand mycommand = new SQLiteCommand(connection))
+                    {
+                        mycommand.CommandText =
+                            "INSERT INTO book (category_id, title, author, isbn, additionalInfoLine1, additionalInfoLine2, entryDate, photo) values(@categoryId, @title, @author, @isbn, @additionalInfoLine1, @additionalInfoLine2, @entryDate, @photo)";
+
+                        mycommand.Parameters.AddWithValue("@categoryId", book.CategoryId);
+                        mycommand.Parameters.AddWithValue("@title", book.Title);
+                        mycommand.Parameters.AddWithValue("@author", book.Author);
+                        mycommand.Parameters.AddWithValue("@isbn", book.ISBN);
+                        mycommand.Parameters.AddWithValue("@additionalInfoLine1", book.AdditionalInfoLine1);
+                        mycommand.Parameters.AddWithValue("@additionalInfoLine2", book.AdditionalInfoLine2);
+                        mycommand.Parameters.AddWithValue("@entryDate", Helpers.ConvertToUnixTimestamp(DateTime.Now));
+                        mycommand.Parameters.Add("@photo", DbType.Binary, 20).Value = photo;
+                        mycommand.Parameters.AddWithValue("@id", book.Id);
+
+                        mycommand.ExecuteNonQuery();
+
+                        mycommand.CommandText = @"select last_insert_rowid()";
+                        long lastId = (long) mycommand.ExecuteScalar();
+
+                        book.Id = lastId;
+
+                    }
+                    mytransaction.Commit();
+                }
+           
             connection.Close();
 
             return new OperationStatus<Book> { OperationMessage = "Ksi¹¿ka zosta³a dodana.", Result = OperationResult.Passed, Data = book };
@@ -114,7 +127,7 @@ namespace BooksHouse.BooksManager
             if (book.Cover != null)
                 using (MemoryStream ms = new MemoryStream())
                 {
-                    book.Cover.Save(ms, book.Cover.RawFormat);
+                    book.Cover.Save(ms, ImageFormat.Bmp);
                     photo = ms.ToArray();
                 }
 
@@ -337,9 +350,9 @@ where b.id=@id";
             book.AdditionalInfoLine1 = row["additionalInfoLine1"].ToString();
             book.AdditionalInfoLine2 = row["additionalInfoLine2"].ToString();
             book.EntryDate = Helpers.ConvertFromUnixTimestamp(long.Parse(row["entryDate"].ToString()));
-            
-            var cover=(row["cover"]) as byte[];
-            if (cover != null && cover.Length>0)
+
+            var cover = (row["cover"]) as byte[];
+            if (cover != null && cover.Length > 0)
                 book.Cover = Image.FromStream(new MemoryStream((byte[])row["cover"]));
 
             return book;

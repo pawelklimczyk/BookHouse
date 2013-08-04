@@ -19,6 +19,7 @@ namespace BooksHouse
     public partial class MainWindow : Window
     {
         private long selectedCategoryId = 0;
+
         public MainWindow()
         {
             Config.DatabaseName = "baza.db3";
@@ -156,23 +157,25 @@ namespace BooksHouse
         private void OnAddBookToCategoryItemExecute(object sender, ExecutedRoutedEventArgs e)
         {
             Category cat = e.Parameter as Category;
+
             if (cat != null)
             {
                 Book book = new Book() { Category = cat };
-                OperationStatus<Book> result1 = BookDetails.ShowWindow(this, book);
+                OperationStatus<Book> result1 = BookDetails.ShowWindow(this, book.Copy());
 
                 if (result1.Result == OperationResult.Passed)
                 {
-                    var result = BooksManager.BooksManager.InsertBook(book);
+                    var result = BooksManager.BooksManager.InsertBook(result1.Data);
 
                     if (result.Result == OperationResult.Passed)
                     {
-                        RefreshBooksList(new BookFilter() { RootCategoryId = selectedCategoryId });
-
+                        RefreshBooksList(new BookFilter() {RootCategoryId = selectedCategoryId});
                         uxBooksList.CurrentItem = book;
                     }
                     else
+                    {
                         MessageBox.Show(result.OperationMessage);
+                    }
                 }
             }
         }
@@ -214,18 +217,16 @@ namespace BooksHouse
             Book book = uxBooksList.CurrentItem as Book;
             if (book != null)
             {
-                //TODO wyslac kopie do okna tam zapisac jak ok
-                OperationStatus<Book> result1 = BookDetails.ShowWindow(this, book);
+                OperationStatus<Book> result1 = BookDetails.ShowWindow(this, book.Copy());
 
                 if (result1.Result == OperationResult.Passed)
                 {
-                    var result = BooksManager.BooksManager.UpdateBook(book);
+                    var result = BooksManager.BooksManager.UpdateBook(result1.Data);
 
                     if (result.Result == OperationResult.Passed)
                         RefreshBooksList(new BookFilter() { RootCategoryId = selectedCategoryId });
                     else
                         MessageBox.Show(result.OperationMessage);
-
                 }
             }
         }
