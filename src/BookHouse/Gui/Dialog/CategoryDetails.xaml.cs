@@ -1,9 +1,10 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using BooksHouse.Domain;
 
-namespace BooksHouse.Gui.Dialog
+namespace BookHouse.Gui.Dialog
 {
     public partial class CategoryDetails : Window
     {
@@ -22,7 +23,7 @@ namespace BooksHouse.Gui.Dialog
             }
             else if (e.Key == Key.Enter)
             {
-                DialogResult = true;
+                DialogResult = !String.IsNullOrWhiteSpace( uxCategoryName.Text);
                 Close();
             }
         }
@@ -33,7 +34,7 @@ namespace BooksHouse.Gui.Dialog
             status.Data = obj;
             CategoryDetails window = new CategoryDetails();
             window.DataContext = obj;
-            window.uxCategoryComboBox.ItemsSource = BooksManager.BooksManager.GetCategoryList(Constants.ROOT_CATEGORY).Where(c => c.Id != obj.Id);
+            window.uxCategoryComboBox.ItemsSource = BooksHouse.BooksManager.BooksManager.GetCategoryList(Constants.ROOT_CATEGORY).Where(c => c.Id != obj.Id);
 
             var retStatus = window.ShowDialog();
 
@@ -42,7 +43,9 @@ namespace BooksHouse.Gui.Dialog
                 status.Result = OperationResult.Passed;
             }
             else
+            {
                 status.Result = OperationResult.Failed;
+            }
 
             return status;
         }
