@@ -1,22 +1,22 @@
 ﻿#region Using directives
 
 using System;
+using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Drawing;
 using System.Windows;
 using System.Windows.Input;
 using BooksHouse.Domain;
 using Microsoft.Win32;
-using Image = System.Drawing.Image;
 
 #endregion
 
-namespace BooksHouse.Gui.Dialog
+namespace BookHouse.Gui.Dialog
 {
     public partial class BookDetails : Window
     {
         private Book book;
+
         private BookDetails()
         {
             InitializeComponent();
@@ -53,7 +53,7 @@ namespace BooksHouse.Gui.Dialog
             window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             window.DataContext = obj;
             window.book = obj;
-            window.uxCategoryComboBox.ItemsSource = BooksManager.BooksManager.GetCategoryList(Constants.ROOT_CATEGORY);
+            window.uxCategoryComboBox.ItemsSource = BooksHouse.BooksManager.BooksManager.GetCategoryList(Constants.ROOT_CATEGORY);
             var retStatus = window.ShowDialog();
 
             if (retStatus.HasValue && retStatus.Value)
@@ -84,37 +84,40 @@ namespace BooksHouse.Gui.Dialog
             dialog.DefaultExt = ".jpg";
             dialog.Filter = "JPG iamges (.jpg)|*.jpg";
 
-            Nullable<bool> result = dialog.ShowDialog();
+            bool? result = dialog.ShowDialog();
 
             if (result == true)
             {
                 try
                 {
-                    Image photo = System.Drawing.Image.FromFile(dialog.FileName);
+                    Image photo = Image.FromFile(dialog.FileName);
 
-                    using (Bitmap scaled = new Bitmap((int)Constants.IMAGE_WIDTH, (int)Constants.IMAGE_HEIGHT, System.Drawing.Imaging.PixelFormat.Format48bppRgb))
+                    using (
+                        Bitmap scaled = new Bitmap((int)Constants.IMAGE_WIDTH, (int)Constants.IMAGE_HEIGHT,
+                                                   PixelFormat.Format48bppRgb))
                     {
                         using (Graphics graphics = Graphics.FromImage(scaled))
                         {
                             int scaledWidth = (photo.Width * (int)Constants.IMAGE_HEIGHT) / photo.Height;
+
                             if (scaledWidth < Constants.IMAGE_WIDTH)
                             {
-                                graphics.DrawImage(photo, new Rectangle(0, 0, (int)Constants.IMAGE_WIDTH, (int)Constants.IMAGE_HEIGHT));
+                                graphics.DrawImage(photo,
+                                                   new Rectangle(0, 0, (int)Constants.IMAGE_WIDTH,
+                                                                 (int)Constants.IMAGE_HEIGHT));
                             }
                             else
                             {
-                                int diff = (int) (((scaledWidth - Constants.IMAGE_WIDTH) * (photo.Width/Constants.IMAGE_WIDTH))/2);
-                                graphics.DrawImage(photo, new Rectangle(0, 0, scaledWidth, (int)Constants.IMAGE_HEIGHT), new Rectangle(diff, 0, photo.Width - diff, photo.Height), GraphicsUnit.Pixel);
-
+                                int diff = (int)(((scaledWidth - Constants.IMAGE_WIDTH) * (photo.Width / Constants.IMAGE_WIDTH)) / 2);
+                                graphics.DrawImage(photo, new Rectangle(0, 0, scaledWidth, (int)Constants.IMAGE_HEIGHT),
+                                                   new Rectangle(diff, 0, photo.Width - diff, photo.Height),
+                                                   GraphicsUnit.Pixel);
                             }
                         }
 
-                        MemoryStream MyStream = new MemoryStream();
-
-                        scaled.Save(MyStream, ImageFormat.Jpeg);
-
-
-                        book.Cover = Image.FromStream(MyStream);
+                        MemoryStream imageStream = new MemoryStream();
+                        scaled.Save(imageStream, ImageFormat.Jpeg);
+                        book.Cover = Image.FromStream(imageStream);
                     }
                 }
                 catch (Exception ex)
@@ -127,6 +130,25 @@ namespace BooksHouse.Gui.Dialog
         private void btn_deleteCover_Click(object sender, RoutedEventArgs e)
         {
             book.Cover = null;
+        }
+
+        private void btn_delete_Click(object sender, RoutedEventArgs e)
+        {
+            if (book != null && book.Id > 0)
+            {
+                var operationResult = BooksHouse.BooksManager.BooksManager.DeleteBook(book);
+
+                if (operationResult.Result == OperationResult.Passed)
+                {
+                    MessageBox.Show("Book was deleted");
+                    DialogResult = true;
+		    Close();
+                }
+                else
+                {
+                    MessageBox.Show(operationResult.OperationMessage);
+                }
+            }
         }
     }
 }
