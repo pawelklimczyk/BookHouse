@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
+using BookHouse.Domain;
 using BooksHouse.Domain;
 
 namespace BookHouse.Gui.Dialog
@@ -34,7 +35,7 @@ namespace BookHouse.Gui.Dialog
             status.Data = obj;
             CategoryDetails window = new CategoryDetails();
             window.DataContext = obj;
-            window.uxCategoryComboBox.ItemsSource = BooksHouse.BooksManager.BooksManager.GetCategoryList(Constants.ROOT_CATEGORY).Where(c => c.Id != obj.Id);
+            window.uxCategoryComboBox.ItemsSource = BooksManager.BooksManager.GetCategoryList(Constants.ROOT_CATEGORY, true).Where(c => c.Id != obj.Id);
 
             var retStatus = window.ShowDialog();
 

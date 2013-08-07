@@ -3,7 +3,7 @@ using System.Globalization;
 using System.IO;
 using System.Windows.Data;
 
-namespace BooksHouse.Gui.Converters
+namespace BookHouse.Gui.Converters
 {
     [ValueConversion(typeof(System.Drawing.Image), typeof(System.Windows.Media.ImageSource))]
     public class ImageConverter : IValueConverter

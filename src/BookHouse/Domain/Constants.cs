@@ -1,4 +1,4 @@
-﻿namespace BooksHouse.Domain
+﻿namespace BookHouse.Domain
 {
     public class Constants
     {

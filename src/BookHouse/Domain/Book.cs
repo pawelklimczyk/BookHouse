@@ -2,11 +2,11 @@
 using System.ComponentModel;
 using System.Drawing;
 
-namespace BooksHouse.Domain
+namespace BookHouse.Domain
 {
     public class Book : INotifyPropertyChanged
     {
-        private Category category;
+        private Category _category;
 
         public long Id { get; set; }
         public long CategoryId { get; set; }
@@ -14,22 +14,24 @@ namespace BooksHouse.Domain
 
         public Category Category
         {
-            get { return category; }
+            get { return _category; }
             set
             {
-                category = value;
+                _category = value;
 
-                if (category != null)
+                if (_category != null)
                 {
-                    CategoryId = category.Id;
-                    CategoryName = category.Name;
+                    CategoryId = _category.Id;
+                    CategoryName = _category.Name;
                 }
                 else
                 {
-                    CategoryId = 0; CategoryName = string.Empty;
+                    CategoryId = 0;
+                    CategoryName = string.Empty;
                 }
             }
         }
+
         public string Title { get; set; }
         public string Author { get; set; }
         public string AdditionalInfoLine1 { get; set; }
@@ -38,6 +40,7 @@ namespace BooksHouse.Domain
         public DateTime EntryDate { get; set; }
 
         private Image cover;
+
         public Image Cover
         {
             get { return cover; }
@@ -60,7 +63,7 @@ namespace BooksHouse.Domain
 
         public Book Copy()
         {
-            Book newBook =(Book) this.MemberwiseClone();
+            Book newBook = (Book) this.MemberwiseClone();
             if (this.Cover != null)
                 newBook.Cover = (Image) this.Cover.Clone();
 

@@ -1,11 +1,11 @@
 ﻿<Window x:Class="BookHouse.Gui.Dialog.BookDetails"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
-        xmlns:Converters="clr-namespace:BooksHouse.Gui.Converters" 
+        xmlns:converters="clr-namespace:BookHouse.Gui.Converters"
         Title="BookDetails" Height="400" Width="400"  
         WindowStartupLocation="CenterOwner" Background="#98cafa" >
     <Window.Resources>
-        <Converters:ImageConverter x:Key="imageConverter" />
+        <converters:ImageConverter x:Key="imageConverter" />
     </Window.Resources>
     <DockPanel LastChildFill="true" Margin="5">
         <StackPanel DockPanel.Dock="Bottom" Orientation="Horizontal" HorizontalAlignment="Left">

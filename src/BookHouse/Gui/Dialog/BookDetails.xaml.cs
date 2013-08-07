@@ -6,6 +6,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Windows;
 using System.Windows.Input;
+using BookHouse.Domain;
 using BooksHouse.Domain;
 using Microsoft.Win32;
 
@@ -53,7 +54,7 @@ namespace BookHouse.Gui.Dialog
             window.WindowStartupLocation = WindowStartupLocation.CenterOwner;
             window.DataContext = obj;
             window.book = obj;
-            window.uxCategoryComboBox.ItemsSource = BooksHouse.BooksManager.BooksManager.GetCategoryList(Constants.ROOT_CATEGORY);
+            window.uxCategoryComboBox.ItemsSource = BooksManager.BooksManager.GetCategoryList(Constants.ROOT_CATEGORY, true);
             var retStatus = window.ShowDialog();
 
             if (retStatus.HasValue && retStatus.Value)
@@ -136,7 +137,7 @@ namespace BookHouse.Gui.Dialog
         {
             if (book != null && book.Id > 0)
             {
-                var operationResult = BooksHouse.BooksManager.BooksManager.DeleteBook(book);
+                var operationResult = BooksManager.BooksManager.DeleteBook(book);
 
                 if (operationResult.Result == OperationResult.Passed)
                 {

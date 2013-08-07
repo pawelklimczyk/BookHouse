@@ -1,5 +1,5 @@
 ﻿using System.Drawing;
-using BooksHouse.Domain;
+using BookHouse.Domain;
 using NUnit.Framework;
 
 namespace BooksHouseTests
@@ -28,12 +28,12 @@ namespace BooksHouseTests
 
             Book copy = book.Copy();
 
-            foreach (var propertyInfo in typeof (Book).GetProperties())
+            foreach (var propertyInfo in typeof(Book).GetProperties())
             {
-                if (propertyInfo.PropertyType == typeof (Image))
+                if (propertyInfo.PropertyType == typeof(Image))
                 {
-                    Bitmap img1 = (Bitmap) propertyInfo.GetValue(book, null);
-                    Bitmap img2 = (Bitmap) propertyInfo.GetValue(copy, null);
+                    Bitmap img1 = (Bitmap)propertyInfo.GetValue(book, null);
+                    Bitmap img2 = (Bitmap)propertyInfo.GetValue(copy, null);
 
                     for (int x = 0; x < img1.Height; ++x)
                         for (int y = 0; y < img1.Width; ++y)

@@ -1,6 +1,6 @@
 ﻿using System.Windows.Input;
 
-namespace BooksHouse
+namespace BookHouse
 {
     public static class CommandLibrary
     {

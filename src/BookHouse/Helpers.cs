@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BooksHouse
+namespace BookHouse
 {
     public class Helpers
     {

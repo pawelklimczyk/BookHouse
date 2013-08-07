@@ -1,9 +1,8 @@
-﻿<Window x:Class="BooksHouse.MainWindow"
+﻿<Window x:Class="BookHouse.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
-        xmlns:local="clr-namespace:BooksHouse" 
-        xmlns:Domain="clr-namespace:BooksHouse.Domain" 
-        xmlns:Converters="clr-namespace:BooksHouse.Gui.Converters" 
+        xmlns:Converters="clr-namespace:BooksHouse.Gui.Converters" xmlns:domain="clr-namespace:BookHouse.Domain"
+        xmlns:bookHouse="clr-namespace:BookHouse" xmlns:converters="clr-namespace:BookHouse.Gui.Converters"
         Title="BookHouse" Padding="0" Margin="0" Height="746" Width="1190" Name="uxMainWondow" 
         WindowStyle="ThreeDBorderWindow" ResizeMode="CanResize" WindowStartupLocation="CenterScreen" MinHeight="720" MinWidth="1186"
         Style="{DynamicResource main-window-style}" OverridesDefaultStyle="False">
@@ -25,17 +24,17 @@
             <Setter Property="HorizontalAlignment"  Value="Stretch"/>
         </Style>
         <Converters:RowNumberConverter x:Key="rowNumberConverter" />
-        <Converters:ImageConverter x:Key="imageConverter" />
+        <converters:ImageConverter x:Key="imageConverter" />
     </Window.Resources>
     <Window.CommandBindings>
-        <CommandBinding Command="local:CommandLibrary.AddCategoryItem" CanExecute="CanAddCategoryItemExecute" Executed="OnAddCategoryItemExecute" />
-        <CommandBinding Command="local:CommandLibrary.RemoveCategoryItem" CanExecute="CanRemoveCategoryItemExecute" Executed="OnRemoveListItemExecute" />
-        <CommandBinding Command="local:CommandLibrary.RefreshCategoryList" CanExecute="CanRefreshCategoryListExecute" Executed="OnRefreshCategoryListExecute" />
-        <CommandBinding Command="local:CommandLibrary.EditCategoryItem" CanExecute="CanEditCategoryItemExecute" Executed="OnEditCategoryItemExecute" />
-        <CommandBinding Command="local:CommandLibrary.AddBookToCategoryItem" CanExecute="CanAddBookToCategoryItemExecute" Executed="OnAddBookToCategoryItemExecute" />
-        <CommandBinding Command="local:CommandLibrary.AddBookItem" CanExecute="CanAddBookItemExecute" Executed="OnAddBookItemExecute" />
-        <CommandBinding Command="local:CommandLibrary.SearchBookItem" CanExecute="CanSearchBookItemExecute" Executed="OnSearchBookItemExecute" />
-        <CommandBinding Command="local:CommandLibrary.ChangeSkinItem" CanExecute="CanChangeSkinItemExecute" Executed="OnChangeSkinItemExecute" />
+        <CommandBinding Command="bookHouse:CommandLibrary.AddCategoryItem" CanExecute="CanAddCategoryItemExecute" Executed="OnAddCategoryItemExecute" />
+        <CommandBinding Command="bookHouse:CommandLibrary.RemoveCategoryItem" CanExecute="CanRemoveCategoryItemExecute" Executed="OnRemoveListItemExecute" />
+        <CommandBinding Command="bookHouse:CommandLibrary.RefreshCategoryList" CanExecute="CanRefreshCategoryListExecute" Executed="OnRefreshCategoryListExecute" />
+        <CommandBinding Command="bookHouse:CommandLibrary.EditCategoryItem" CanExecute="CanEditCategoryItemExecute" Executed="OnEditCategoryItemExecute" />
+        <CommandBinding Command="bookHouse:CommandLibrary.AddBookToCategoryItem" CanExecute="CanAddBookToCategoryItemExecute" Executed="OnAddBookToCategoryItemExecute" />
+        <CommandBinding Command="bookHouse:CommandLibrary.AddBookItem" CanExecute="CanAddBookItemExecute" Executed="OnAddBookItemExecute" />
+        <CommandBinding Command="bookHouse:CommandLibrary.SearchBookItem" CanExecute="CanSearchBookItemExecute" Executed="OnSearchBookItemExecute" />
+        <CommandBinding Command="bookHouse:CommandLibrary.ChangeSkinItem" CanExecute="CanChangeSkinItemExecute" Executed="OnChangeSkinItemExecute" />
     </Window.CommandBindings>
     <DockPanel HorizontalAlignment="Center" VerticalAlignment="Top" LastChildFill="True" MinWidth="1186" MaxWidth="1186" MaxHeight="720" MinHeight="720">
         <StackPanel DockPanel.Dock="Left" Width="236">
@@ -57,7 +56,7 @@
                     <Label Style="{DynamicResource add-book-label}"  Grid.Row="2" Grid.Column="0" >ISBN</Label>
                     <TextBox Style="{DynamicResource add-book-text}" Grid.Row="2" Grid.Column="1" Name="uxAddBookISBN"></TextBox>
                 </Grid>
-                <Button Command="local:CommandLibrary.AddBookItem" Margin="0 15" Style="{DynamicResource add-book-button}" />
+                <Button Command="bookHouse:CommandLibrary.AddBookItem" Margin="0 15" Style="{DynamicResource add-book-button}" />
             </StackPanel>
             <StackPanel Height="484" Style="{DynamicResource right-bottom-stack-panel}">
                 <StackPanel Orientation="Horizontal" Margin="60 9 0 0">
@@ -68,16 +67,16 @@
                     <TreeView.ContextMenu>
                         <ContextMenu >
                             <ContextMenu.Items>
-                                <MenuItem Header="Dodaj książkę" Command="local:CommandLibrary.AddBookToCategoryItem" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.SelectedItem}"/>
-                                <MenuItem Header="Dodaj kategorie" Command="local:CommandLibrary.AddCategoryItem" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.SelectedItem}"/>
-                                <MenuItem Header="Usun kategorie" Command="local:CommandLibrary.RemoveCategoryItem" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.SelectedItem}"/>
-                                <MenuItem Header="Edytuj" Command="local:CommandLibrary.EditCategoryItem" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.SelectedItem}"/>
-                                <MenuItem Header="Odswiez" Command="local:CommandLibrary.RefreshCategoryList" />
+                                <MenuItem Header="Dodaj książkę" Command="bookHouse:CommandLibrary.AddBookToCategoryItem" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.SelectedItem}"/>
+                                <MenuItem Header="Dodaj kategorie" Command="bookHouse:CommandLibrary.AddCategoryItem" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.SelectedItem}"/>
+                                <MenuItem Header="Usun kategorie" Command="bookHouse:CommandLibrary.RemoveCategoryItem" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.SelectedItem}"/>
+                                <MenuItem Header="Edytuj" Command="bookHouse:CommandLibrary.EditCategoryItem" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.SelectedItem}"/>
+                                <MenuItem Header="Odswiez" Command="bookHouse:CommandLibrary.RefreshCategoryList" />
                             </ContextMenu.Items>
                         </ContextMenu>
                     </TreeView.ContextMenu>
                     <TreeView.ItemTemplate>
-                        <HierarchicalDataTemplate ItemsSource="{Binding SubCategories}" DataType="{x:Type Domain:Category}">
+                        <HierarchicalDataTemplate ItemsSource="{Binding SubCategories}" DataType="{x:Type domain:Category}">
                             <StackPanel Orientation="Horizontal">
                                 <TextBlock Text="{Binding Name}" >                              
                                     <TextBlock.Style>
@@ -95,14 +94,14 @@
         </StackPanel>
         <StackPanel DockPanel.Dock="Right" Width="160" Height="720"  Style="{DynamicResource right-pane-stack-panel}">
             <TextBox Name="uxSearchBox" Margin="5 145 10 0"  Style="{DynamicResource add-book-text}" KeyDown="uxSearchBox_KeyDown"></TextBox>
-            <Button Command="local:CommandLibrary.SearchBookItem" Margin="0 5 0 0" Style="{DynamicResource search-book-button}" BorderBrush="{x:Null}" />
+            <Button Command="bookHouse:CommandLibrary.SearchBookItem" Margin="0 5 0 0" Style="{DynamicResource search-book-button}" BorderBrush="{x:Null}" />
             <ComboBox Width="150" Margin="0 75 0 0" Name="CurrentSkinComboBox">
                 <ComboBoxItem IsSelected="True" Tag="Themes/Night-flowers-theme/Night-flowers-theme.xaml">Night Flowers</ComboBoxItem>
                 <ComboBoxItem Tag="Themes/Calm-theme/Calm-theme.xaml">Calm</ComboBoxItem>
                 <ComboBoxItem Tag="Themes/Violet-relax-theme/Violet-relax-theme.xaml">Violet</ComboBoxItem>
                 <ComboBoxItem Tag="Themes/Natural-elegance-theme/Natural-elegance-theme.xaml">Natural Elegance</ComboBoxItem>
             </ComboBox>
-            <Button Command="local:CommandLibrary.ChangeSkinItem" Margin="0 5 0 0" Style="{DynamicResource change-skil-button}" BorderBrush="{x:Null}" />
+            <Button Command="bookHouse:CommandLibrary.ChangeSkinItem" Margin="0 5 0 0" Style="{DynamicResource change-skil-button}" BorderBrush="{x:Null}" />
         </StackPanel>
         
         <StackPanel DockPanel.Dock="Top" Height="107" Style="{DynamicResource header-stack-panel}" /> 
@@ -126,7 +125,7 @@
                                     </StackPanel>
                                 </StackPanel>
 
-                                <Image DockPanel.Dock="Left" Width="{x:Static Domain:Constants.IMAGE_WIDTH}" Height="{x:Static Domain:Constants.IMAGE_HEIGHT}" Source="{Binding Path=Cover, Converter={StaticResource imageConverter} }"/>                                
+                                <Image DockPanel.Dock="Left" Width="{x:Static domain:Constants.IMAGE_WIDTH}" Height="{x:Static domain:Constants.IMAGE_HEIGHT}" Source="{Binding Path=Cover, Converter={StaticResource imageConverter} }"/>                                
 
                                 <StackPanel DockPanel.Dock="Right" Width="80" Height="130" Margin="5">
                                     <Button Click="EditBook_Click">

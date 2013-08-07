@@ -5,10 +5,11 @@ using System.Data.SQLite;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using BooksHouse.Domain;
+using BookHouse.Domain;
 using System.Linq;
+using BooksHouse.Domain;
 
-namespace BooksHouse.BooksManager
+namespace BookHouse.BooksManager
 {
     public class BooksManager
     {
@@ -71,34 +72,34 @@ namespace BooksHouse.BooksManager
                     photo = ms.ToArray();
                 }
 
-                using (SQLiteTransaction mytransaction = connection.BeginTransaction())
+            using (SQLiteTransaction mytransaction = connection.BeginTransaction())
+            {
+                using (SQLiteCommand mycommand = new SQLiteCommand(connection))
                 {
-                    using (SQLiteCommand mycommand = new SQLiteCommand(connection))
-                    {
-                        mycommand.CommandText =
-                            "INSERT INTO book (category_id, title, author, isbn, additionalInfoLine1, additionalInfoLine2, entryDate, photo) values(@categoryId, @title, @author, @isbn, @additionalInfoLine1, @additionalInfoLine2, @entryDate, @photo)";
+                    mycommand.CommandText =
+                        "INSERT INTO book (category_id, title, author, isbn, additionalInfoLine1, additionalInfoLine2, entryDate, photo) values(@categoryId, @title, @author, @isbn, @additionalInfoLine1, @additionalInfoLine2, @entryDate, @photo)";
 
-                        mycommand.Parameters.AddWithValue("@categoryId", book.CategoryId);
-                        mycommand.Parameters.AddWithValue("@title", book.Title);
-                        mycommand.Parameters.AddWithValue("@author", book.Author);
-                        mycommand.Parameters.AddWithValue("@isbn", book.ISBN);
-                        mycommand.Parameters.AddWithValue("@additionalInfoLine1", book.AdditionalInfoLine1);
-                        mycommand.Parameters.AddWithValue("@additionalInfoLine2", book.AdditionalInfoLine2);
-                        mycommand.Parameters.AddWithValue("@entryDate", Helpers.ConvertToUnixTimestamp(DateTime.Now));
-                        mycommand.Parameters.Add("@photo", DbType.Binary, 20).Value = photo;
-                        mycommand.Parameters.AddWithValue("@id", book.Id);
+                    mycommand.Parameters.AddWithValue("@categoryId", book.CategoryId);
+                    mycommand.Parameters.AddWithValue("@title", book.Title);
+                    mycommand.Parameters.AddWithValue("@author", book.Author);
+                    mycommand.Parameters.AddWithValue("@isbn", book.ISBN);
+                    mycommand.Parameters.AddWithValue("@additionalInfoLine1", book.AdditionalInfoLine1);
+                    mycommand.Parameters.AddWithValue("@additionalInfoLine2", book.AdditionalInfoLine2);
+                    mycommand.Parameters.AddWithValue("@entryDate", Helpers.ConvertToUnixTimestamp(DateTime.Now));
+                    mycommand.Parameters.Add("@photo", DbType.Binary, 20).Value = photo;
+                    mycommand.Parameters.AddWithValue("@id", book.Id);
 
-                        mycommand.ExecuteNonQuery();
+                    mycommand.ExecuteNonQuery();
 
-                        mycommand.CommandText = @"select last_insert_rowid()";
-                        long lastId = (long) mycommand.ExecuteScalar();
+                    mycommand.CommandText = @"select last_insert_rowid()";
+                    long lastId = (long)mycommand.ExecuteScalar();
 
-                        book.Id = lastId;
+                    book.Id = lastId;
 
-                    }
-                    mytransaction.Commit();
                 }
-           
+                mytransaction.Commit();
+            }
+
             connection.Close();
 
             return new OperationStatus<Book> { OperationMessage = "Ksi¹¿ka zosta³a dodana.", Result = OperationResult.Passed, Data = book };
@@ -398,28 +399,32 @@ where b.id=@id";
             return category;
         }
 
-        public static IList<Category> GetCategoryList(long rootId)
+        public static IList<Category> GetCategoryList(long rootId, bool flatStructure)
         {
             SQLiteConnection connection = new SQLiteConnection(String.Format(connectionString, Config.DatabaseName));
             connection.Open();
 
-            IList<Category> list = GetCategoryList(rootId, connection);
+            IList<Category> list = GetCategoryList(rootId, flatStructure, connection);
+
             connection.Close();
+
             return list;
         }
 
-        public static IList<Category> GetCategoryList(long rootId, SQLiteConnection connection)
+        public static IList<Category> GetCategoryList(long rootId, bool flatStructure, SQLiteConnection connection)
         {
             List<Category> list = new List<Category>();
 
             using (SQLiteCommand mycommand = new SQLiteCommand(connection))
             {
                 mycommand.CommandText = "SELECT cat.id as Id, cat.parent_id as ParentId, cat.name as Name from category cat ";//
-                if (rootId > 0)
-                {
-                    mycommand.CommandText += "where cat.id=@id";
-                    mycommand.Parameters.AddWithValue("@id", rootId);
-                }
+                //if (rootId > 0)
+                // {
+                mycommand.CommandText += "where cat.id=@id";
+                if (rootId == Constants.ROOT_CATEGORY)
+                    mycommand.CommandText += " or cat.parent_id=0";
+                mycommand.Parameters.AddWithValue("@id", rootId);
+                // }
 
                 IDataReader reader = mycommand.ExecuteReader();
                 DataTable table = new DataTable();
@@ -441,33 +446,37 @@ where b.id=@id";
                 }
 
                 reader.Close();
+ 
                 if (table.Rows.Count > 0)
                 {
-                    if (rootId > 0)
+                    foreach (Category subCategory in list.ToList())
+                        list.AddRange(GetSubCategories(subCategory.Id, connection));
+                    
+                    if (!flatStructure)
                     {
-                        foreach (Category subCategory in list.ToList())
-                            list.AddRange(GetSubCategories(subCategory.Id, connection));
-                    }
-
-                    foreach (var category in list.Where(cat => cat.Id > 0).ToList())
-                    {
-                        Category category1 = category;
-                        category.Parent = list.FirstOrDefault(c => c.Id == category1.ParentId);
-                        Category category2 = category;
-                        category.SubCategories = list.Where(c => c.ParentId == category2.Id).ToList();
-                        Category category3 = category;
-                        list.RemoveAll(c => c.ParentId == category3.Id);
+                        foreach (var category in list.Where(cat => cat.Id > 0).ToList())
+                        {
+                            Category category1 = category;
+                            category.Parent = list.FirstOrDefault(c => c.Id == category1.ParentId);
+                            Category category2 = category;
+                            category.SubCategories = list.Where(c => c.ParentId == category2.Id).ToList();
+                            Category category3 = category;
+                            list.RemoveAll(c => c.ParentId == category3.Id);
+                        }
                     }
                 }
+                
                 if (rootId == 0)
+                {
                     list.Insert(0, new Category { Id = 0, Name = "ALL BOOKS", ParentId = 0 });
+                }
             }
             return list;
         }
 
         public static bool DatabaseFileExists(string databaseName)
         {
-            return System.IO.File.Exists(databaseName);
+            return File.Exists(databaseName);
         }
 
         public static IList<Book> GetBooksList(long selectedCategoryId)
@@ -504,19 +513,19 @@ where b.category_id=@category_id";
                 if (filter.HasTextFilter)
                 {
                     mycommand.CommandText += " and (";
-                    List<string> search_list = new List<string>();
+                    List<string> searchList = new List<string>();
                     if (!String.IsNullOrWhiteSpace(filter.Author))
-                        search_list.Add(" upper(b.author) like upper(@author)");
+                        searchList.Add(" upper(b.author) like upper(@author)");
                     if (!String.IsNullOrWhiteSpace(filter.Title))
-                        search_list.Add(" upper(b.title) like upper(@title) ");
+                        searchList.Add(" upper(b.title) like upper(@title) ");
                     if (!String.IsNullOrWhiteSpace(filter.AdditionalInfo))
-                        search_list.Add(" upper(b.additionalInfoLine1) like upper(@additionalInfo) ");
+                        searchList.Add(" upper(b.additionalInfoLine1) like upper(@additionalInfo) ");
                     if (!String.IsNullOrWhiteSpace(filter.AdditionalInfo))
-                        search_list.Add(" upper(b.additionalInfoLine2) like upper(@additionalInfo) ");
+                        searchList.Add(" upper(b.additionalInfoLine2) like upper(@additionalInfo) ");
                     if (!String.IsNullOrWhiteSpace(filter.ISBN))
-                        search_list.Add(" upper(b.isbn) like upper(@isbn) ");
+                        searchList.Add(" upper(b.isbn) like upper(@isbn) ");
 
-                    mycommand.CommandText += string.Join("or", search_list) + ")";
+                    mycommand.CommandText += string.Join("or", searchList) + ")";
                 }
 
                 mycommand.Parameters.AddWithValue("@category_id", filter.RootCategoryId);
@@ -594,7 +603,7 @@ where b.category_id=@category_id";
             return list;
         }
 
-        public static OperationStatus<bool> UploadBookCover(Book book, Image image, System.Drawing.Imaging.ImageFormat format)
+        public static OperationStatus<bool> UploadBookCover(Book book, Image image, ImageFormat format)
         {
             using (MemoryStream ms = new MemoryStream())
             {

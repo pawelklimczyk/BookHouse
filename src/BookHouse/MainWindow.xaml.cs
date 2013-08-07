@@ -3,22 +3,20 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Linq;
-using BookHouse;
+using BookHouse.Domain;
 using BookHouse.Gui.Dialog;
-using BooksHouse.Domain;
-using BooksHouse.Gui.Dialog;
 
 #endregion
 
-namespace BooksHouse
+namespace BookHouse
 {
     public partial class MainWindow : Window
     {
-        private long selectedCategoryId = 0;
+        private long _selectedCategoryId;
 
         public MainWindow()
         {
@@ -29,14 +27,14 @@ namespace BooksHouse
             Focus();
         }
 
-        void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
             RefreshCategoryList();
         }
 
         private void RefreshCategoryList()
         {
-            uxCategoryList.ItemsSource = BooksManager.BooksManager.GetCategoryList(Constants.ROOT_CATEGORY);
+            uxCategoryList.ItemsSource = BooksManager.BooksManager.GetCategoryList(Constants.ROOT_CATEGORY, false);
         }
 
         private void CheckDatabaseFilePresence()
@@ -100,7 +98,7 @@ namespace BooksHouse
             if (result.Result == OperationResult.Passed)
             {
                 RefreshCategoryList();
-                RefreshBooksList(new BookFilter() { RootCategoryId = 0 });
+                RefreshBooksList(new BookFilter {RootCategoryId = 0});
 
                 uxBooksList.CurrentItem = null;
             }
@@ -141,8 +139,8 @@ namespace BooksHouse
             Category cat = e.NewValue as Category;
             if (cat != null)
             {
-                selectedCategoryId = cat.Id;
-                RefreshBooksList(new BookFilter { RootCategoryId = selectedCategoryId });
+                _selectedCategoryId = cat.Id;
+                RefreshBooksList(new BookFilter {RootCategoryId = _selectedCategoryId});
                 orderByTitle();
             }
         }
@@ -160,7 +158,7 @@ namespace BooksHouse
 
             if (cat != null)
             {
-                Book book = new Book() { Category = cat };
+                Book book = new Book {Category = cat};
                 OperationStatus<Book> result1 = BookDetails.ShowWindow(this, book.Copy());
 
                 if (result1.Result == OperationResult.Passed)
@@ -169,7 +167,7 @@ namespace BooksHouse
 
                     if (result.Result == OperationResult.Passed)
                     {
-                        RefreshBooksList(new BookFilter() {RootCategoryId = selectedCategoryId});
+                        RefreshBooksList(new BookFilter {RootCategoryId = _selectedCategoryId});
                         uxBooksList.CurrentItem = book;
                     }
                     else
@@ -188,7 +186,13 @@ namespace BooksHouse
 
         private void OnSearchBookItemExecute(object sender, ExecutedRoutedEventArgs e)
         {
-            RefreshBooksList(new BookFilter() { Title = uxSearchBox.Text, Author = uxSearchBox.Text, AdditionalInfo = uxSearchBox.Text, ISBN = uxSearchBox.Text });
+            RefreshBooksList(new BookFilter
+                {
+                    Title = uxSearchBox.Text,
+                    Author = uxSearchBox.Text,
+                    AdditionalInfo = uxSearchBox.Text,
+                    ISBN = uxSearchBox.Text
+                });
         }
 
         private void CanChangeSkinItemExecute(object sender, CanExecuteRoutedEventArgs e)
@@ -224,7 +228,7 @@ namespace BooksHouse
                     var result = BooksManager.BooksManager.UpdateBook(result1.Data);
 
                     if (result.Result == OperationResult.Passed)
-                        RefreshBooksList(new BookFilter() { RootCategoryId = selectedCategoryId });
+                        RefreshBooksList(new BookFilter {RootCategoryId = _selectedCategoryId});
                     else
                         MessageBox.Show(result.OperationMessage);
                 }
@@ -279,11 +283,13 @@ namespace BooksHouse
 
         private void OnAddBookItemExecute(object sender, ExecutedRoutedEventArgs e)
         {
-            Book book = new Book();
-            book.CategoryId = selectedCategoryId;
-            book.Title = uxAddBookTitle.Text;
-            book.Author = uxAddBookAuthor.Text;
-            book.ISBN = uxAddBookISBN.Text;
+            Book book = new Book
+                {
+                    CategoryId = _selectedCategoryId,
+                    Title = uxAddBookTitle.Text,
+                    Author = uxAddBookAuthor.Text,
+                    ISBN = uxAddBookISBN.Text
+                };
 
             var result = BooksManager.BooksManager.InsertBook(book);
 
@@ -292,7 +298,7 @@ namespace BooksHouse
                 uxAddBookTitle.Text = String.Empty;
                 uxAddBookAuthor.Text = String.Empty;
                 uxAddBookISBN.Text = String.Empty;
-                RefreshBooksList(new BookFilter { RootCategoryId = selectedCategoryId });
+                RefreshBooksList(new BookFilter {RootCategoryId = _selectedCategoryId});
                 var x = (uxBooksList.ItemsSource as IList<Book>).FirstOrDefault(b => b.Id == book.Id);
                 uxBooksList.CurrentItem = x;
                 uxBooksList.SelectedItem = x;
@@ -316,7 +322,13 @@ namespace BooksHouse
         private void uxSearchBox_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Enter)
-                RefreshBooksList(new BookFilter { Title = uxSearchBox.Text, Author = uxSearchBox.Text, AdditionalInfo = uxSearchBox.Text, ISBN = uxSearchBox.Text });
+                RefreshBooksList(new BookFilter
+                    {
+                        Title = uxSearchBox.Text,
+                        Author = uxSearchBox.Text,
+                        AdditionalInfo = uxSearchBox.Text,
+                        ISBN = uxSearchBox.Text
+                    });
         }
     }
 }

@@ -1,7 +1,6 @@
-using System;
 using System.Collections.Generic;
 
-namespace BooksHouse.Domain
+namespace BookHouse.Domain
 {
     public class Category
     {

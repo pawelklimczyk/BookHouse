@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Drawing;
 using System.Linq;
-using BooksHouse.BooksManager;
+using BookHouse.BooksManager;
+using BookHouse.Domain;
 using BooksHouse.Domain;
 using NUnit.Framework;
 
@@ -102,7 +103,7 @@ namespace BookHouseTests
         [Test]
         public void ShouldReadAllCategoryList()
         {
-            var list = BooksManager.GetCategoryList(Constants.ROOT_CATEGORY);
+            var list = BooksManager.GetCategoryList(Constants.ROOT_CATEGORY, true);
 
             foreach (var category in list.Where(c => c.ParentId > 0))
                 Assert.IsTrue(category.ParentId == category.Parent.Id);
@@ -115,7 +116,7 @@ namespace BookHouseTests
         [Test]
         public void ShouldReadHierachicalCategoryList()
         {
-            var list = BooksManager.GetCategoryList(2);
+            var list = BooksManager.GetCategoryList(2, true);
 
             foreach (var category in list.Where(c => c.ParentId > 0))
                 Assert.IsTrue(category.ParentId == category.Parent.Id);
@@ -176,7 +177,7 @@ namespace BookHouseTests
             Category newCategory = new Category
             {
                 Name = "Category to delete",
-                Parent = BooksManager.GetCategoryList(-1)[0]
+                Parent = BooksManager.GetCategoryList(Constants.ROOT_CATEGORY, false)[0]
             };
 
             var result = BooksManager.InsertCategory(newCategory);
@@ -193,9 +194,9 @@ namespace BookHouseTests
             BooksManager.InsertBook(newBook);
 
             BooksManager.DeleteCategory(newCategory);
-            var books = BooksManager.GetBooksList(new BookFilter() { ISBN = isbn });
+            var books = BooksManager.GetBooksList(new BookFilter { ISBN = isbn });
             Assert.AreEqual(books.Count, 1);
-            Assert.IsNull(books[0].Category); ;
+            Assert.IsNull(books[0].Category); 
         }
 
 

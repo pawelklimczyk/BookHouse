@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace BooksHouse
+namespace BookHouse
 {
     public partial class App : Application { }
 }
