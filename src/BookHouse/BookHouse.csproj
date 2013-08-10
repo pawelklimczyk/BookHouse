@@ -36,7 +36,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>book ic.ico</ApplicationIcon>
+    <ApplicationIcon>Assets\book ic.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject>BookHouse.App</StartupObject>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -211,7 +214,7 @@
     <Resource Include="Themes\Natural-elegance-theme\sortbytitle-normal.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="book ic.ico" />
+    <Resource Include="Assets\book ic.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -5,7 +5,7 @@
         xmlns:bookHouse="clr-namespace:BookHouse" xmlns:converters="clr-namespace:BookHouse.Gui.Converters"
         Title="BookHouse" Padding="0" Margin="0" Height="746" Width="1190" Name="uxMainWondow" 
         WindowStyle="ThreeDBorderWindow" ResizeMode="CanResize" WindowStartupLocation="CenterScreen" MinHeight="720" MinWidth="1186"
-        Style="{DynamicResource main-window-style}" OverridesDefaultStyle="False">
+        Style="{DynamicResource main-window-style}" OverridesDefaultStyle="False" Icon="Assets/book ic.ico">
     <Window.Resources>
 
         <Style TargetType="StackPanel">
@@ -68,10 +68,10 @@
                         <ContextMenu >
                             <ContextMenu.Items>
                                 <MenuItem Header="Dodaj książkę" Command="bookHouse:CommandLibrary.AddBookToCategoryItem" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.SelectedItem}"/>
-                                <MenuItem Header="Dodaj kategorie" Command="bookHouse:CommandLibrary.AddCategoryItem" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.SelectedItem}"/>
-                                <MenuItem Header="Usun kategorie" Command="bookHouse:CommandLibrary.RemoveCategoryItem" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.SelectedItem}"/>
+                                <MenuItem Header="Dodaj kategorię" Command="bookHouse:CommandLibrary.AddCategoryItem" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.SelectedItem}"/>
+                                <MenuItem Header="Usuń kategorię" Command="bookHouse:CommandLibrary.RemoveCategoryItem" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.SelectedItem}"/>
                                 <MenuItem Header="Edytuj" Command="bookHouse:CommandLibrary.EditCategoryItem" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=ContextMenu}, Path=PlacementTarget.SelectedItem}"/>
-                                <MenuItem Header="Odswiez" Command="bookHouse:CommandLibrary.RefreshCategoryList" />
+                                <MenuItem Header="Odśwież" Command="bookHouse:CommandLibrary.RefreshCategoryList" />
                             </ContextMenu.Items>
                         </ContextMenu>
                     </TreeView.ContextMenu>
@@ -141,9 +141,10 @@
                                 </StackPanel>
                                 <StackPanel HorizontalAlignment="Stretch">
                                     <Label Background="#3d5a8a" Foreground="#98cafa" FontFamily="Arial" FontSize="14" FontWeight="Bold" FontStyle="Italic" Content="{Binding Title}" Margin="3 6 1 0" Padding="3 1"/>
-                                    <Label Background="#3d5a8a" Foreground="#98cafa" FontFamily="Tahoma" FontSize="14" FontWeight="Bold" Content="{Binding Author}" Margin="3 0 1 15" Padding="3 1" />
-                                    <Label Foreground="#23385a" FontFamily="Tahoma" FontSize="12" Content="{Binding AdditionalInfo}" Padding="1" Margin="1" />
+                                    <Label Background="#3d5a8a" Foreground="#98cafa" FontFamily="Tahoma" FontSize="14" FontWeight="Bold" Content="{Binding Author}" Margin="3 0 1 5" Padding="3 1" />
                                     <Label Foreground="#23385a" FontFamily="Tahoma" FontSize="12" Margin="1" Padding="1" Content="{Binding ISBN}" />
+                                    <Label Foreground="#23385a" FontFamily="Tahoma" FontSize="12" Content="{Binding AdditionalInfoLine1}" Padding="1" Margin="1" />
+                                    <Label Foreground="#23385a" FontFamily="Tahoma" FontSize="12" Content="{Binding AdditionalInfoLine2}" Padding="1" Margin="1" />
                                 </StackPanel>
                             </DockPanel>
                         </DataTemplate>
